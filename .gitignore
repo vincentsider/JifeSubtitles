@@ -1,0 +1,51 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Virtual environments
+venv/
+env/
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Models (large files)
+models/whisper/*.pt
+models/whisper/*.bin
+*.onnx
+*.engine
+
+# Audio test files
+*.wav
+*.mp3
+
+# Temp files
+/tmp/
+*.tmp
+
+# Docker
+.docker/
+
+# MCP local config (contains local paths)
+.mcp.json
+
+# Claude local state
+.claude/

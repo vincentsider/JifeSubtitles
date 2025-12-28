@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Live Subtitles</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.2/socket.io.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-primary: #000000;
+            --text-primary: #ffffff;
+            --text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans JP', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Header - minimal, top right */
+        #header {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            z-index: 100;
+            opacity: 0.3;
+            transition: opacity 0.3s;
+        }
+
+        #header:hover {
+            opacity: 1;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ff4444;
+        }
+
+        .status-dot.connected {
+            background: #00ff88;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        button, select {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--text-primary);
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        button:hover, select:hover {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Main subtitle area - centered horizontally AND vertically */
+        #subtitle-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        /* Single subtitle display - TV style */
+        #current-subtitle {
+            text-align: center;
+            max-width: 90%;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        #current-subtitle.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        #current-subtitle.fade-out {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        .subtitle-text {
+            font-size: 4em;
+            font-weight: 700;
+            line-height: 1.2;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.95);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 16px 32px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .source-text {
+            font-size: 1.5em;
+            color: #cccccc;
+            margin-bottom: 12px;
+            text-shadow: var(--text-shadow);
+        }
+
+        /* Font size variations - all larger for distance viewing */
+        .size-small .subtitle-text { font-size: 3em; }
+        .size-small .source-text { font-size: 1.2em; }
+        .size-medium .subtitle-text { font-size: 4em; }
+        .size-medium .source-text { font-size: 1.5em; }
+        .size-large .subtitle-text { font-size: 5em; }
+        .size-large .source-text { font-size: 1.8em; }
+        .size-xlarge .subtitle-text { font-size: 6em; }
+        .size-xlarge .source-text { font-size: 2.2em; }
+
+        /* Waiting state */
+        #waiting {
+            text-align: center;
+            color: #333;
+            font-size: 1.2em;
+        }
+
+        /* Footer stats - minimal */
+        #footer {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            font-size: 10px;
+            color: #333;
+            opacity: 0.5;
+        }
+
+        /* Hide source text toggle */
+        .hide-source .source-text {
+            display: none;
+        }
+
+        /* Responsive - keep large on all devices for distance viewing */
+        @media (max-width: 480px) {
+            .subtitle-text { font-size: 2.5em; padding: 12px 20px; }
+            .source-text { font-size: 1.1em; }
+            .size-large .subtitle-text { font-size: 3em; }
+            .size-xlarge .subtitle-text { font-size: 3.5em; }
+            #subtitle-area { padding-bottom: 60px; }
+        }
+
+        @media (min-width: 768px) {
+            .subtitle-text { font-size: 5em; }
+            .size-large .subtitle-text { font-size: 6em; }
+            .size-xlarge .subtitle-text { font-size: 7em; }
+        }
+
+        @media (min-width: 1024px) {
+            .subtitle-text { font-size: 6em; }
+            .size-large .subtitle-text { font-size: 7em; }
+            .size-xlarge .subtitle-text { font-size: 8em; }
+        }
+    </style>
+</head>
+<body class="size-medium">
+    <div id="header">
+        <span class="status-dot" id="statusDot"></span>
+        <select id="fontSize" onchange="setFontSize(this.value)" title="Font size">
+            <option value="small">A</option>
+            <option value="medium" selected>A+</option>
+            <option value="large">A++</option>
+            <option value="xlarge">A+++</option>
+        </select>
+        <button onclick="toggleSource()" title="Toggle Japanese" id="toggleBtn">JP</button>
+    </div>
+
+    <div id="subtitle-area">
+        <div id="current-subtitle">
+            <div id="waiting">Waiting for subtitles...</div>
+        </div>
+    </div>
+
+    <div id="footer">
+        <span id="count">0</span> subtitles | <span id="latency">-</span>ms
+    </div>
+
+    <script>
+        const socket = io();
+        const subtitleEl = document.getElementById('current-subtitle');
+        const waitingEl = document.getElementById('waiting');
+
+        let subtitleCount = 0;
+        let showSource = true;
+        let currentTimeout = null;
+        let latencies = [];
+
+        // How long subtitle stays visible (ms)
+        const DISPLAY_DURATION = 4000;
+
+        socket.on('connect', () => {
+            document.getElementById('statusDot').classList.add('connected');
+        });
+
+        socket.on('disconnect', () => {
+            document.getElementById('statusDot').classList.remove('connected');
+        });
+
+        // Receive subtitle history - only show the last one
+        socket.on('history', (history) => {
+            if (history.length > 0) {
+                showSubtitle(history[history.length - 1]);
+            }
+        });
+
+        // Receive new subtitle
+        socket.on('subtitle', (data) => {
+            showSubtitle(data);
+        });
+
+        function showSubtitle(data) {
+            // Clear any pending fade-out
+            if (currentTimeout) {
+                clearTimeout(currentTimeout);
+            }
+
+            // Hide waiting message
+            if (waitingEl) {
+                waitingEl.style.display = 'none';
+            }
+
+            // Build subtitle HTML
+            let html = '';
+            if (data.source && showSource) {
+                html += `<div class="source-text">${escapeHtml(data.source)}</div>`;
+            }
+            html += `<div class="subtitle-text">${escapeHtml(data.text)}</div>`;
+
+            // Update subtitle
+            subtitleEl.classList.remove('visible', 'fade-out');
+            subtitleEl.innerHTML = html;
+
+            // Trigger reflow then add visible class for animation
+            void subtitleEl.offsetWidth;
+            subtitleEl.classList.add('visible');
+
+            // Update stats
+            subtitleCount++;
+            document.getElementById('count').textContent = subtitleCount;
+
+            if (data.latency > 0) {
+                latencies.push(data.latency * 1000);
+                if (latencies.length > 10) latencies.shift();
+                const avgLatency = Math.round(latencies.reduce((a, b) => a + b, 0) / latencies.length);
+                document.getElementById('latency').textContent = avgLatency;
+            }
+
+            // Schedule fade-out
+            currentTimeout = setTimeout(() => {
+                subtitleEl.classList.add('fade-out');
+            }, DISPLAY_DURATION);
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function setFontSize(size) {
+            document.body.className = document.body.className.replace(/size-\w+/, '') + ' size-' + size;
+            localStorage.setItem('subtitleFontSize', size);
+        }
+
+        function toggleSource() {
+            showSource = !showSource;
+            document.body.classList.toggle('hide-source', !showSource);
+            document.getElementById('toggleBtn').style.opacity = showSource ? 1 : 0.5;
+            localStorage.setItem('showSource', showSource);
+        }
+
+        // Restore preferences
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedSize = localStorage.getItem('subtitleFontSize');
+            if (savedSize) {
+                setFontSize(savedSize);
+                document.getElementById('fontSize').value = savedSize;
+            }
+
+            const savedShowSource = localStorage.getItem('showSource');
+            if (savedShowSource !== null) {
+                showSource = savedShowSource === 'true';
+                document.body.classList.toggle('hide-source', !showSource);
+                document.getElementById('toggleBtn').style.opacity = showSource ? 1 : 0.5;
+            }
+        });
+
+        // Keep screen awake
+        async function requestWakeLock() {
+            if ('wakeLock' in navigator) {
+                try {
+                    await navigator.wakeLock.request('screen');
+                } catch (err) {}
+            }
+        }
+        requestWakeLock();
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') requestWakeLock();
+        });
+    </script>
+</body>
+</html>

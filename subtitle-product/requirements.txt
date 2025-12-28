@@ -1,0 +1,25 @@
+# Japanese -> English Real-Time Subtitle System
+# Requirements for Jetson Orin Nano SUPER
+
+# Core dependencies
+numpy>=1.24.0
+
+# Audio processing
+sounddevice>=0.4.6
+
+# Web server
+flask>=3.0.0
+flask-socketio>=5.3.0
+gevent>=23.0.0
+gevent-websocket>=0.10.1
+
+# Note: The following are installed via jetson-containers or system packages:
+# - torch (from pypi.jetson-ai-lab.io)
+# - whisper_trt (from NVIDIA-AI-IOT)
+# - tensorrt (from JetPack)
+
+# Optional: for fallback to faster-whisper (may have CUDA issues on Jetson)
+# faster-whisper>=1.0.0
+
+# Optional: for fallback to standard whisper
+# openai-whisper>=20231117

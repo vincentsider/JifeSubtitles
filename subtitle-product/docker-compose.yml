@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  subtitle-server:
+    # Use pre-built whisper_trt image from jetson-containers
+    image: whisper_trt:r36.4.tegra-aarch64-cu126-22.04-whisper_trt
+
+    container_name: subtitle-server
+
+    # Working directory and command
+    working_dir: /app
+    command: >
+      bash -c "apt-get update && apt-get install -y --no-install-recommends libportaudio2 libasound2-plugins alsa-utils &&
+               pip install --no-cache-dir flask flask-socketio sounddevice scipy 2>/dev/null || true &&
+               python3 /app/app/main.py"
+
+    # Enable NVIDIA runtime for GPU access
+    runtime: nvidia
+
+    # Restart policy
+    restart: unless-stopped
+
+    # Audio device access
+    devices:
+      - /dev/snd:/dev/snd
+
+    # Required for ALSA
+    group_add:
+      - audio
+
+    # Environment variables
+    environment:
+      - AUDIO_DEVICE=${AUDIO_DEVICE:-plughw:2,0}
+      - WHISPER_MODEL=${WHISPER_MODEL:-small}
+      - WHISPER_BACKEND=${WHISPER_BACKEND:-whisper_trt}
+      - WEB_PORT=5000
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+
+    # Port mapping
+    ports:
+      - "5000:5000"
+
+    # Volume mounts
+    volumes:
+      # Mount application code
+      - .:/app
+      # Mount JIFE directory for test audio
+      - /home/vincent/JIFE:/data
+      # Persist Whisper model cache
+      - whisper_cache:/root/.cache/whisper_trt
+      # Logs (optional)
+      - ./logs:/var/log/subtitle-server
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+
+    # Resource limits (optional - adjust based on your needs)
+    deploy:
+      resources:
+        limits:
+          memory: 6G
+        reservations:
+          memory: 4G
+
+volumes:
+  whisper_cache:
+    driver: local
