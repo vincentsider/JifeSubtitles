@@ -44,6 +44,9 @@ models/whisper/*.bin
 # Docker
 .docker/
 
+# Docker image export (too large for git - transfer via USB/SCP)
+whisper_trt_image.tar.gz
+
 # MCP local config (contains local paths)
 .mcp.json
 
