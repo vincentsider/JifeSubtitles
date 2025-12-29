@@ -120,7 +120,8 @@ class AudioCapture:
         """
         # Simple decimation: take every 3rd sample
         # For speech, this works well enough and is ~10x faster than FFT resample
-        return chunk[::3].copy().astype(np.float32)
+        # Note: chunk is already float32, so just copy the strided view
+        return np.array(chunk[::3], dtype=np.float32)
 
     def _deliver_chunk(self, chunk: np.ndarray):
         """Deliver audio chunk to callback or queue"""

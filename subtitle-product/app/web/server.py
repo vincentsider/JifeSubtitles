@@ -49,7 +49,7 @@ class SubtitleServer:
 
         # Subtitle history (for clients joining mid-stream)
         self.subtitle_history: List[Dict[str, Any]] = []
-        self.max_history = 20
+        self.max_history = 10  # Only need last few for new clients
 
         # Pause state
         self.paused = False
@@ -233,7 +233,7 @@ class SubtitleServer:
         # Track latency
         if latency_sec > 0:
             self.latencies.append(latency_sec * 1000)  # ms
-            if len(self.latencies) > 50:
+            if len(self.latencies) > 20:  # 20 samples enough for average
                 self.latencies.pop(0)
             self.stats['avg_latency_ms'] = round(
                 sum(self.latencies) / len(self.latencies), 1

@@ -41,7 +41,7 @@ class Config:
     LOG_FORMAT = '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
 
     # Performance
-    MAX_QUEUE_SIZE = 20  # Max audio chunks in queue
+    MAX_QUEUE_SIZE = 5  # Max audio chunks in queue (aggressive discard keeps it at ~1)
     SUBTITLE_HISTORY_SIZE = 50  # Max subtitles to keep in browser
 
 
