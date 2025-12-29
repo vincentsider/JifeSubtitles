@@ -254,12 +254,13 @@
                 waitingEl.style.display = 'none';
             }
 
-            // Build subtitle HTML
+            // Build subtitle HTML with speaker color
             let html = '';
             if (data.source && showSource) {
                 html += `<div class="source-text">${escapeHtml(data.source)}</div>`;
             }
-            html += `<div class="subtitle-text">${escapeHtml(data.text)}</div>`;
+            const color = data.color || '#ffffff';
+            html += `<div class="subtitle-text" style="color: ${color}">${escapeHtml(data.text)}</div>`;
 
             // Update subtitle
             subtitleEl.classList.remove('visible', 'fade-out');

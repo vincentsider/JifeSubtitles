@@ -54,6 +54,11 @@ class SubtitleServer:
         # Pause state
         self.paused = False
 
+        # Speaker tracking - alternate colors on silence gaps
+        self.current_speaker = 0
+        self.last_subtitle_time = None
+        self.speaker_colors = ['#ffffff', '#00ffff', '#ffff00', '#ff88ff']  # white, cyan, yellow, pink
+
         # Hallucination filter - common Whisper hallucinations on silence/noise
         self.hallucination_phrases = [
             'thank you for watching',
@@ -63,10 +68,15 @@ class SubtitleServer:
             'please subscribe',
             'like and subscribe',
             'see you next time',
+            'see you in the next video',
+            'see you in the next',
             'bye bye',
             'goodbye',
             'the end',
             'to be continued',
+            'subtitles by',
+            'captions by',
+            'translated by',
         ]
 
         # Register routes and events
@@ -198,12 +208,22 @@ class SubtitleServer:
             logger.debug(f"Filtered hallucination: {text}")
             return
 
+        # Speaker detection: if gap > 2 seconds, likely new speaker
+        now = datetime.now()
+        if self.last_subtitle_time:
+            gap = (now - self.last_subtitle_time).total_seconds()
+            if gap > 2.0:  # 2 second gap suggests speaker change
+                self.current_speaker = (self.current_speaker + 1) % len(self.speaker_colors)
+        self.last_subtitle_time = now
+
         subtitle = {
             'text': text.strip(),
             'source': source_text.strip() if source_text else '',
             'latency': round(latency_sec, 2),
-            'timestamp': datetime.now().isoformat(),
+            'timestamp': now.isoformat(),
             'metadata': metadata or {},
+            'speaker': self.current_speaker,
+            'color': self.speaker_colors[self.current_speaker],
         }
 
         # Update stats
