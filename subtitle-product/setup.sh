@@ -55,23 +55,42 @@ else
     fi
 fi
 
-# Step 2: Create models directory
+# Step 2: Create swap file for better performance
 echo ""
-echo "[2/4] Creating directories..."
+echo "[2/6] Setting up 16GB swap file..."
+if [ -f /swapfile ]; then
+    echo "  Swap file already exists, skipping."
+else
+    fallocate -l 16G /swapfile
+    chmod 600 /swapfile
+    mkswap /swapfile
+    swapon /swapfile
+    echo '/swapfile none swap sw 0 0' >> /etc/fstab
+    echo "  16GB swap file created and enabled."
+fi
+
+# Step 3: Create directories
+echo ""
+echo "[3/6] Creating directories..."
 mkdir -p /home/$(logname)/JIFE/models/whisper
 chown -R $(logname):$(logname) /home/$(logname)/JIFE
 
-# Step 3: Install systemd service
+# Step 4: Make power control script executable
 echo ""
-echo "[3/4] Installing systemd service..."
+echo "[4/6] Setting up power control..."
+chmod +x "$SCRIPT_DIR/scripts/power-control.sh"
+
+# Step 5: Install systemd service
+echo ""
+echo "[5/6] Installing systemd service..."
 cp "$SCRIPT_DIR/jife-subtitles.service" /etc/systemd/system/
 systemctl daemon-reload
 systemctl enable jife-subtitles
 echo "  Service installed and enabled for auto-start."
 
-# Step 4: Start the service
+# Step 6: Start the service
 echo ""
-echo "[4/4] Starting JIFE service..."
+echo "[6/6] Starting JIFE service..."
 systemctl start jife-subtitles
 
 echo ""

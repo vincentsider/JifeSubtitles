@@ -9,8 +9,11 @@ Type=simple
 User=root
 WorkingDirectory=/home/vincent/JIFE/subtitle-product
 Environment=AUDIO_DEVICE=plughw:2,0
+# Create power control FIFO
+ExecStartPre=/bin/bash -c 'rm -f /tmp/jife-power-control; mkfifo /tmp/jife-power-control; chmod 666 /tmp/jife-power-control'
 ExecStartPre=/usr/bin/docker compose down --remove-orphans
-ExecStart=/usr/bin/docker compose up
+# Start power control listener in background, then start docker
+ExecStart=/bin/bash -c '/home/vincent/JIFE/subtitle-product/scripts/power-control.sh & /usr/bin/docker compose up'
 ExecStop=/usr/bin/docker compose down
 Restart=always
 RestartSec=10

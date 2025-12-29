@@ -122,20 +122,27 @@ class SubtitleServer:
 
         @self.app.route('/shutdown', methods=['POST'])
         def shutdown():
-            """Safely shutdown the Jetson"""
-            import subprocess
+            """Safely shutdown the Jetson via FIFO to host"""
             logger.info("Shutdown requested from web interface")
-            # Run shutdown in background so we can return response
-            subprocess.Popen(['sudo', 'shutdown', '-h', 'now'])
-            return jsonify({'status': 'shutting down'})
+            try:
+                with open('/tmp/jife-power-control', 'w') as f:
+                    f.write('shutdown\n')
+                return jsonify({'status': 'shutting down'})
+            except Exception as e:
+                logger.error(f"Shutdown failed: {e}")
+                return jsonify({'status': 'error', 'message': str(e)}), 500
 
         @self.app.route('/reboot', methods=['POST'])
         def reboot():
-            """Safely reboot the Jetson"""
-            import subprocess
+            """Safely reboot the Jetson via FIFO to host"""
             logger.info("Reboot requested from web interface")
-            subprocess.Popen(['sudo', 'reboot'])
-            return jsonify({'status': 'rebooting'})
+            try:
+                with open('/tmp/jife-power-control', 'w') as f:
+                    f.write('reboot\n')
+                return jsonify({'status': 'rebooting'})
+            except Exception as e:
+                logger.error(f"Reboot failed: {e}")
+                return jsonify({'status': 'error', 'message': str(e)}), 500
 
     def _register_socket_events(self):
         """Register WebSocket events"""

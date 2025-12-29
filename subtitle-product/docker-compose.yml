@@ -50,6 +50,8 @@ services:
       - whisper_cache:/root/.cache/whisper_trt
       # Logs (optional)
       - ./logs:/var/log/subtitle-server
+      # Power control FIFO for safe shutdown/reboot
+      - /tmp/jife-power-control:/tmp/jife-power-control
 
     # Health check
     healthcheck:
