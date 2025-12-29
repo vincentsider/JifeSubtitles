@@ -72,8 +72,25 @@ def processing_loop(
     """
     logger.info("Processing loop started")
 
+    # Max latency before discarding old chunks (seconds)
+    MAX_QUEUE_LATENCY = 6.0
+
     while not shutdown_event.is_set():
         try:
+            # Check queue size - if too backed up, discard old chunks
+            queue_size = audio_queue.qsize()
+            if queue_size > 2:
+                # Discard old chunks to catch up (keep only newest)
+                discarded = 0
+                while audio_queue.qsize() > 1:
+                    try:
+                        audio_queue.get_nowait()
+                        discarded += 1
+                    except queue.Empty:
+                        break
+                if discarded > 0:
+                    logger.warning(f"Discarded {discarded} old chunks to reduce latency")
+
             # Get audio chunk from queue
             audio_chunk = audio_queue.get(timeout=1.0)
 

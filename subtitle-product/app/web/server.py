@@ -51,6 +51,24 @@ class SubtitleServer:
         self.subtitle_history: List[Dict[str, Any]] = []
         self.max_history = 20
 
+        # Pause state
+        self.paused = False
+
+        # Hallucination filter - common Whisper hallucinations on silence/noise
+        self.hallucination_phrases = [
+            'thank you for watching',
+            'thank you for your viewing',
+            'thanks for watching',
+            'thank you very much',
+            'please subscribe',
+            'like and subscribe',
+            'see you next time',
+            'bye bye',
+            'goodbye',
+            'the end',
+            'to be continued',
+        ]
+
         # Register routes and events
         self._register_routes()
         self._register_socket_events()
@@ -80,6 +98,45 @@ class SubtitleServer:
         def history():
             return jsonify(self.subtitle_history)
 
+        @self.app.route('/pause', methods=['POST'])
+        def pause():
+            self.paused = True
+            logger.info("Subtitles paused")
+            return jsonify({'paused': True})
+
+        @self.app.route('/resume', methods=['POST'])
+        def resume():
+            self.paused = False
+            logger.info("Subtitles resumed")
+            return jsonify({'paused': False})
+
+        @self.app.route('/toggle_pause', methods=['POST'])
+        def toggle_pause():
+            self.paused = not self.paused
+            logger.info(f"Subtitles {'paused' if self.paused else 'resumed'}")
+            return jsonify({'paused': self.paused})
+
+        @self.app.route('/status')
+        def status():
+            return jsonify({'paused': self.paused})
+
+        @self.app.route('/shutdown', methods=['POST'])
+        def shutdown():
+            """Safely shutdown the Jetson"""
+            import subprocess
+            logger.info("Shutdown requested from web interface")
+            # Run shutdown in background so we can return response
+            subprocess.Popen(['sudo', 'shutdown', '-h', 'now'])
+            return jsonify({'status': 'shutting down'})
+
+        @self.app.route('/reboot', methods=['POST'])
+        def reboot():
+            """Safely reboot the Jetson"""
+            import subprocess
+            logger.info("Reboot requested from web interface")
+            subprocess.Popen(['sudo', 'reboot'])
+            return jsonify({'status': 'rebooting'})
+
     def _register_socket_events(self):
         """Register WebSocket events"""
 
@@ -96,6 +153,14 @@ class SubtitleServer:
         def on_disconnect():
             self.stats['clients_connected'] = max(0, self.stats['clients_connected'] - 1)
             logger.info(f"Client disconnected. Total: {self.stats['clients_connected']}")
+
+    def _is_hallucination(self, text: str) -> bool:
+        """Check if text is a common Whisper hallucination"""
+        text_lower = text.lower().strip()
+        for phrase in self.hallucination_phrases:
+            if phrase in text_lower:
+                return True
+        return False
 
     def send_subtitle(
         self,
@@ -114,6 +179,16 @@ class SubtitleServer:
             metadata: Additional metadata
         """
         if not text or not text.strip():
+            return
+
+        # Skip if paused
+        if self.paused:
+            logger.debug(f"Skipping subtitle (paused): {text[:30]}...")
+            return
+
+        # Filter out hallucinations
+        if self._is_hallucination(text):
+            logger.debug(f"Filtered hallucination: {text}")
             return
 
         subtitle = {

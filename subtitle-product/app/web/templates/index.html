@@ -185,6 +185,18 @@
             <option value="xlarge">A+++</option>
         </select>
         <button onclick="toggleSource()" title="Toggle Japanese" id="toggleBtn">JP</button>
+        <button onclick="togglePause()" title="Pause/Resume" id="pauseBtn">⏸</button>
+        <button onclick="showPowerMenu()" title="Power" id="powerBtn">⚡</button>
+    </div>
+
+    <!-- Power menu modal -->
+    <div id="powerModal" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.9); z-index:200; justify-content:center; align-items:center;">
+        <div style="text-align:center;">
+            <p style="color:#fff; font-size:1.5em; margin-bottom:30px;">Power Options</p>
+            <button onclick="doShutdown()" style="background:#ff4444; padding:20px 40px; font-size:1.2em; margin:10px;">⏻ Shutdown</button>
+            <button onclick="doReboot()" style="background:#4488ff; padding:20px 40px; font-size:1.2em; margin:10px;">🔄 Reboot</button>
+            <button onclick="hidePowerMenu()" style="background:#666; padding:20px 40px; font-size:1.2em; margin:10px;">✕ Cancel</button>
+        </div>
     </div>
 
     <div id="subtitle-area">
@@ -206,6 +218,7 @@
         let showSource = true;
         let currentTimeout = null;
         let latencies = [];
+        let isPaused = false;
 
         // How long subtitle stays visible (ms)
         const DISPLAY_DURATION = 4000;
@@ -289,6 +302,38 @@
             document.body.classList.toggle('hide-source', !showSource);
             document.getElementById('toggleBtn').style.opacity = showSource ? 1 : 0.5;
             localStorage.setItem('showSource', showSource);
+        }
+
+        function togglePause() {
+            fetch('/toggle_pause', { method: 'POST' })
+                .then(res => res.json())
+                .then(data => {
+                    isPaused = data.paused;
+                    document.getElementById('pauseBtn').textContent = isPaused ? '▶' : '⏸';
+                    document.getElementById('pauseBtn').style.background = isPaused ? 'rgba(255, 100, 100, 0.4)' : 'rgba(255, 255, 255, 0.2)';
+                });
+        }
+
+        function showPowerMenu() {
+            document.getElementById('powerModal').style.display = 'flex';
+        }
+
+        function hidePowerMenu() {
+            document.getElementById('powerModal').style.display = 'none';
+        }
+
+        function doShutdown() {
+            if (confirm('Are you sure you want to shutdown the Jetson?')) {
+                fetch('/shutdown', { method: 'POST' });
+                document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100vh;color:#fff;font-size:2em;">Shutting down...</div>';
+            }
+        }
+
+        function doReboot() {
+            if (confirm('Are you sure you want to reboot the Jetson?')) {
+                fetch('/reboot', { method: 'POST' });
+                document.body.innerHTML = '<div style="display:flex;justify-content:center;align-items:center;height:100vh;color:#fff;font-size:2em;">Rebooting... Please wait 2 minutes then refresh.</div>';
+            }
         }
 
         // Restore preferences
