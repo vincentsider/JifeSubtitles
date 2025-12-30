@@ -1,0 +1,84 @@
+# Dockerfile for faster-whisper with CTranslate2 CUDA support
+# For Jetson Orin Nano with JetPack 6.x (L4T r36.x)
+# Supports: large-v3, large-v3-turbo, medium, small (all multilingual including Japanese)
+
+FROM nvcr.io/nvidia/l4t-jetpack:r36.4.0
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    cmake \
+    git \
+    python3 \
+    python3-pip \
+    python3-dev \
+    libportaudio2 \
+    libasound2-plugins \
+    alsa-utils \
+    curl \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+# Upgrade pip
+RUN pip3 install --no-cache-dir --upgrade pip setuptools wheel
+
+# Install PyTorch for Jetson (CUDA enabled)
+RUN pip3 install --no-cache-dir \
+    torch \
+    torchvision \
+    torchaudio \
+    --index-url https://pypi.jetson-ai-lab.io/jp6/cu126
+
+# Install numpy (specific version for compatibility)
+RUN pip3 install --no-cache-dir numpy==1.26.4
+
+# Clone and build CTranslate2 with CUDA support
+# IMPORTANT: Use -j2 instead of -j$(nproc) to avoid OOM on Jetson Orin Nano (7.6GB RAM)
+# Disable MKL (not available on ARM), disable DNNL, use RUY for CPU backend
+WORKDIR /tmp
+RUN git clone --recursive https://github.com/OpenNMT/CTranslate2.git && \
+    cd CTranslate2 && \
+    mkdir build && cd build && \
+    cmake .. \
+        -DWITH_CUDA=ON \
+        -DWITH_CUDNN=ON \
+        -DWITH_MKL=OFF \
+        -DWITH_DNNL=OFF \
+        -DWITH_RUY=ON \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DBUILD_CLI=OFF \
+        -DOPENMP_RUNTIME=NONE && \
+    make -j2 && \
+    make install && \
+    ldconfig
+
+# Set library path for CTranslate2
+ENV LD_LIBRARY_PATH=/usr/local/lib:${LD_LIBRARY_PATH}
+ENV CTRANSLATE2_ROOT=/usr/local
+
+# Install CTranslate2 Python bindings
+WORKDIR /tmp/CTranslate2/python
+RUN pip3 install --no-cache-dir .
+
+# Install faster-whisper
+RUN pip3 install --no-cache-dir faster-whisper
+
+# Install other dependencies
+RUN pip3 install --no-cache-dir \
+    flask \
+    flask-socketio \
+    sounddevice \
+    scipy
+
+# Clean up build files
+RUN rm -rf /tmp/CTranslate2
+
+# Set working directory
+WORKDIR /app
+
+# Default command
+CMD ["python3", "/app/app/main.py"]

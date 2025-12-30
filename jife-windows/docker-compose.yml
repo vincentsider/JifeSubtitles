@@ -1,0 +1,80 @@
+# =============================================================================
+# JIFE Subtitle System - Windows Docker Compose
+# =============================================================================
+# For Windows PCs with NVIDIA GPU (RTX 20xx/30xx/40xx).
+#
+# Usage:
+#   Build:  docker compose build
+#   Start:  docker compose up -d
+#   Stop:   docker compose down
+#   Logs:   docker logs subtitle-server -f
+#
+# Prerequisites:
+#   - Docker Desktop with WSL2 backend
+#   - NVIDIA Container Toolkit installed in WSL2
+#   - USB audio device attached to WSL2 (via usbipd)
+# =============================================================================
+
+services:
+  subtitle-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    image: jife-windows:latest
+    container_name: subtitle-server
+
+    working_dir: /app
+    command: ["python3", "/app/app/main.py"]
+
+    # NVIDIA GPU support for Windows/WSL2
+    # This syntax works with Docker Compose v2+
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+    restart: unless-stopped
+
+    # Audio device passthrough
+    # Make sure USB audio is attached to WSL2 via usbipd
+    devices:
+      - /dev/snd:/dev/snd
+
+    group_add:
+      - audio
+
+    # Environment variables
+    # Windows GPU can handle float16 and larger beam size for best quality
+    environment:
+      - AUDIO_DEVICE=${AUDIO_DEVICE:-plughw:1,0}
+      - WHISPER_MODEL=${WHISPER_MODEL:-large-v3}
+      - WHISPER_BACKEND=${WHISPER_BACKEND:-faster_whisper}
+      - WHISPER_COMPUTE_TYPE=${WHISPER_COMPUTE_TYPE:-float16}
+      - WHISPER_BEAM_SIZE=${WHISPER_BEAM_SIZE:-5}
+      - WEB_PORT=5000
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+
+    ports:
+      - "5000:5000"
+
+    # Mount app code for development (can edit without rebuild)
+    volumes:
+      - ./app:/app/app:ro
+      # Cache for downloaded models
+      - whisper_cache:/root/.cache/huggingface
+
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 120s
+
+volumes:
+  whisper_cache:
+    driver: local

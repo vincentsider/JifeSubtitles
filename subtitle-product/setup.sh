@@ -12,8 +12,8 @@
 #        cd /home/$USER
 #        git clone https://github.com/vincentsider/JifeSubtitles.git
 #
-#   2. Copy whisper_trt_image.tar.gz to /home/$USER/JifeSubtitles/
-#      (use USB drive or SCP from old Jetson)
+#   2. Copy jife-faster-whisper.tar.gz to /home/$USER/JifeSubtitles/
+#      (use USB drive or SCP from source Jetson)
 #
 #   3. Run this script:
 #        cd /home/$USER/JifeSubtitles/subtitle-product
@@ -29,8 +29,8 @@ echo "  JIFE Subtitle System - Setup"
 echo "=============================================="
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-IMAGE_FILE="$SCRIPT_DIR/../whisper_trt_image.tar.gz"
-IMAGE_NAME="whisper_trt:r36.4.tegra-aarch64-cu126-22.04-whisper_trt"
+IMAGE_FILE="$SCRIPT_DIR/../jife-faster-whisper.tar.gz"
+IMAGE_NAME="jife-faster-whisper:latest"
 
 # Check if running as root for systemd operations
 if [ "$EUID" -ne 0 ]; then
@@ -50,7 +50,7 @@ else
         echo "  Docker image loaded successfully."
     else
         echo "  ERROR: Docker image file not found: $IMAGE_FILE"
-        echo "  Please copy whisper_trt_image.tar.gz to: $(dirname $IMAGE_FILE)/"
+        echo "  Please copy jife-faster-whisper.tar.gz to: $(dirname $IMAGE_FILE)/"
         exit 1
     fi
 fi

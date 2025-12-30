@@ -45,7 +45,10 @@ models/whisper/*.bin
 .docker/
 
 # Docker image export (too large for git - transfer via USB/SCP)
+# See NEW_JETSON_SETUP.md for instructions on transferring this file
 whisper_trt_image.tar.gz
+jife-faster-whisper.tar.gz
+*.tar.gz
 
 # MCP local config (contains local paths)
 .mcp.json
