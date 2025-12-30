@@ -17,6 +17,7 @@ JIFE (Japanese In-Flight Entertainment) runs real-time Japanese to English speec
 
 ## ARCHITECTURE
 
+### Hardware HDMI Audio (Option 1)
 ```
 HDMI Audio Source
        |
@@ -31,6 +32,24 @@ USB Audio Adapter --> Windows PC (RTX GPU)
                            v
                       http://PC_IP:5000 --> iPad/Phone browser
 ```
+
+### Virtual Audio Cable (Option 2 - NEW)
+```
+Windows Apps (YouTube/Netflix/etc.)
+       |
+       v
+VB-CABLE + VoiceMeeter --> Windows PC (RTX GPU)
+       |                         |
+       └─> Speakers         Docker Container:
+                            - Audio capture (sounddevice)
+                            - faster-whisper large-v3 float16
+                            - Flask WebSocket server
+                                   |
+                                   v
+                            http://PC_IP:5000 --> iPad/Phone browser
+```
+
+**See [AUDIO_SETUP_GUIDE.md](AUDIO_SETUP_GUIDE.md) for detailed audio configuration instructions.**
 
 ---
 
@@ -98,17 +117,13 @@ This downloads ~8GB of dependencies and builds the image. Takes 10-20 minutes.
 
 ### Step 3: Configure audio device
 
-Find your USB audio adapter:
-```bash
-# In WSL2, if using usbipd:
-usbipd list  # In PowerShell
-usbipd attach --wsl --busid <ID>  # Attach to WSL
+**IMPORTANT:** Audio setup depends on your use case. See [AUDIO_SETUP_GUIDE.md](AUDIO_SETUP_GUIDE.md) for complete instructions.
 
-# Then in WSL2:
-arecord -l  # Find device number
-```
+**Quick summary:**
+- **Hardware HDMI audio** (for external devices): See "Option 1" in AUDIO_SETUP_GUIDE.md
+- **YouTube/browser audio** (for PC applications): See "Option 2" in AUDIO_SETUP_GUIDE.md
 
-Edit `docker-compose.yml` and set `AUDIO_DEVICE` to your device (e.g., `plughw:1,0`).
+You can skip audio configuration for now and enable it later - the container will still run and the web interface will be accessible.
 
 ### Step 4: Run
 

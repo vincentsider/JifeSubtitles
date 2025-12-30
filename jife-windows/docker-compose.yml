@@ -41,11 +41,12 @@ services:
 
     # Audio device passthrough
     # Make sure USB audio is attached to WSL2 via usbipd
-    devices:
-      - /dev/snd:/dev/snd
+    # TEMPORARILY DISABLED - Enable after attaching USB audio via usbipd
+    # devices:
+    #   - /dev/snd:/dev/snd
 
-    group_add:
-      - audio
+    # group_add:
+    #   - audio
 
     # Environment variables
     # Windows GPU can handle float16 and larger beam size for best quality
