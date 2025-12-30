@@ -16,44 +16,32 @@ logger = logging.getLogger(__name__)
 # Available models for the frontend selector
 # Sorted by recommended order for Jetson Orin Nano (7.4GB RAM)
 # 'id' format: model_name:compute_type:beam_size for unique identification
+#
+# NOTE: large-v3-turbo is NOT included because it does NOT support translation.
+# Turbo was fine-tuned only on transcription data, not translation data.
+# See: https://github.com/SYSTRAN/faster-whisper/issues/1237
 AVAILABLE_MODELS = [
+    {
+        'id': 'large-v3:int8:1',
+        'model': 'large-v3',
+        'name': 'Large-v3 INT8 (Best)',
+        'description': 'Best accuracy for Japanese, supports translation',
+        'compute_type': 'int8',
+        'beam_size': 1,
+    },
     {
         'id': 'medium:int8:3',
         'model': 'medium',
-        'name': 'Medium INT8 (Recommended)',
-        'description': 'Best speed/accuracy, lowest memory',
+        'name': 'Medium INT8',
+        'description': 'Good balance of speed/accuracy',
         'compute_type': 'int8',
         'beam_size': 3,
     },
     {
-        'id': 'medium:fp16:5',
-        'model': 'medium',
-        'name': 'Medium FP16',
-        'description': 'Slightly better accuracy, more memory',
-        'compute_type': 'float16',
-        'beam_size': 5,
-    },
-    {
-        'id': 'large-v3-turbo:int8:1',
-        'model': 'large-v3-turbo',
-        'name': 'Large-v3 Turbo',
-        'description': 'Fast large model, good accuracy',
-        'compute_type': 'int8',
-        'beam_size': 1,
-    },
-    {
-        'id': 'large-v3:int8:1',
-        'model': 'large-v3',
-        'name': 'Large-v3 INT8',
-        'description': 'Best accuracy, high memory',
-        'compute_type': 'int8',
-        'beam_size': 1,
-    },
-    {
         'id': 'small:int8:3',
         'model': 'small',
-        'name': 'Small (Lightest)',
-        'description': 'Fastest, lowest accuracy',
+        'name': 'Small (Fastest)',
+        'description': 'Fastest, lower accuracy',
         'compute_type': 'int8',
         'beam_size': 3,
     },
