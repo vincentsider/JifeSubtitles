@@ -138,14 +138,21 @@
             font-size: 1.2em;
         }
 
-        /* Footer stats - minimal */
+        /* Footer stats - visible system status */
         #footer {
             position: fixed;
             bottom: 10px;
             left: 10px;
-            font-size: 10px;
-            color: #333;
-            opacity: 0.5;
+            font-size: 14px;
+            color: #888;
+            opacity: 0.8;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+        #footer:hover {
+            opacity: 1;
         }
 
         /* Hide source text toggle */
@@ -217,7 +224,10 @@
     </div>
 
     <div id="footer">
-        <span id="count">0</span> subtitles | <span id="latency">-</span>ms
+        <span id="count">0</span> subtitles | <span id="latency">-</span>ms |
+        Mode: <span id="mode">-</span> |
+        Chunk: <span id="chunkSize">-</span>s
+        <span id="vadStatus" style="display:none"> | VAD: ✓</span>
     </div>
 
     <script>
@@ -385,6 +395,33 @@
             if (document.visibilityState === 'visible') requestWakeLock();
         });
 
+        // Load system status
+        function loadStatus() {
+            fetch('/status')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.system_status) {
+                        updateSystemStatus(data.system_status);
+                    }
+                })
+                .catch(err => console.error('Failed to load status:', err));
+        }
+
+        function updateSystemStatus(status) {
+            document.getElementById('mode').textContent = status.mode || '-';
+            document.getElementById('chunkSize').textContent = status.chunk_size || '-';
+            if (status.vad_loaded) {
+                document.getElementById('vadStatus').style.display = 'inline';
+            } else {
+                document.getElementById('vadStatus').style.display = 'none';
+            }
+        }
+
+        // Listen for system status updates
+        socket.on('system_status_update', (status) => {
+            updateSystemStatus(status);
+        });
+
         // Model switching
         function loadModels() {
             fetch('/models')
@@ -500,8 +537,9 @@
             }, 3000);
         });
 
-        // Load models on page load
+        // Load models and status on page load
         loadModels();
+        loadStatus();
     </script>
 </body>
 </html>

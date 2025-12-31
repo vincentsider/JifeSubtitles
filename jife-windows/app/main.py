@@ -270,27 +270,35 @@ def main():
     # 3. Create audio capture (mode-dependent)
     logger.info(f"Setting up audio capture (mode: {config.PROCESSING_MODE})...")
 
+    vad_loaded = False
     if config.PROCESSING_MODE == 'vad':
         # VAD mode: raw audio capture + VAD processor
-        vad_processor = VADProcessor(
-            sample_rate=config.SAMPLE_RATE,
-            min_chunk_size=config.VAD_MIN_CHUNK_SIZE,
-            max_chunk_size=config.VAD_MAX_CHUNK_SIZE,
-            min_silence_duration_ms=config.MIN_SILENCE_DURATION_MS,
-            speech_pad_ms=config.PRE_ROLL_MS,
-            output_queue=audio_queue,
-        )
+        try:
+            vad_processor = VADProcessor(
+                sample_rate=config.SAMPLE_RATE,
+                min_chunk_size=config.VAD_MIN_CHUNK_SIZE,
+                max_chunk_size=config.VAD_MAX_CHUNK_SIZE,
+                min_silence_duration_ms=config.MIN_SILENCE_DURATION_MS,
+                speech_pad_ms=config.PRE_ROLL_MS,
+                output_queue=audio_queue,
+            )
+            vad_loaded = True
+            logger.info("✓ Silero VAD model loaded successfully")
 
-        # Raw audio capture feeds into VAD processor
-        audio_capture = AudioCapture(
-            device=config.AUDIO_DEVICE,
-            sample_rate=config.SAMPLE_RATE,
-            channels=config.CHANNELS,
-            chunk_duration=0.5,  # Small chunks for VAD processing
-            chunk_overlap=0.0,
-            callback=vad_processor.process_audio,  # Feed to VAD
-        )
-    else:
+            # Raw audio capture feeds into VAD processor
+            audio_capture = AudioCapture(
+                device=config.AUDIO_DEVICE,
+                sample_rate=config.SAMPLE_RATE,
+                channels=config.CHANNELS,
+                chunk_duration=0.5,  # Small chunks for VAD processing
+                chunk_overlap=0.0,
+                callback=vad_processor.process_audio,  # Feed to VAD
+            )
+        except Exception as e:
+            logger.error(f"Failed to load VAD, falling back to fixed mode: {e}")
+            config.PROCESSING_MODE = 'fixed'  # Fallback
+
+    if config.PROCESSING_MODE == 'fixed':
         # Fixed mode: direct chunking
         audio_capture = AudioCapture(
             device=config.AUDIO_DEVICE,
@@ -300,6 +308,14 @@ def main():
             chunk_overlap=config.CHUNK_OVERLAP_SEC,
             output_queue=audio_queue,
         )
+
+    # Update web server with system status
+    web_server.update_system_status({
+        'mode': config.PROCESSING_MODE,
+        'chunk_size': config.CHUNK_DURATION_SEC if config.PROCESSING_MODE == 'fixed' else config.VAD_MAX_CHUNK_SIZE,
+        'vad_loaded': vad_loaded,
+        'processing_active': True,
+    })
 
     # 4. Start processing thread
     processing_thread = threading.Thread(

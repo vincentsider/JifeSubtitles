@@ -109,7 +109,7 @@ class VADProcessor:
             with torch.no_grad():
                 speech_prob = self.vad_model(window, self.sample_rate).item()
 
-            is_speech = speech_prob > 0.5  # Threshold
+            is_speech = speech_prob > 0.3  # Lowered threshold to catch more speech (was 0.5)
 
             if is_speech:
                 # Speech detected

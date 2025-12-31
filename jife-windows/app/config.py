@@ -16,7 +16,7 @@ class Config:
     PROCESSING_MODE = os.environ.get('PROCESSING_MODE', 'fixed')  # 'fixed' = Option A, 'vad' = Option B
 
     # Fixed chunk mode settings (Option A - fast, simple)
-    CHUNK_DURATION_SEC = 2.5  # Increased from 1.5s - longer chunks = more context
+    CHUNK_DURATION_SEC = 3.5  # Increased to 3.5s - more context for better translation quality
     CHUNK_OVERLAP_SEC = 0.0  # NO OVERLAP - prevents repetition with short chunks
     SILENCE_THRESHOLD = 0.02  # RMS threshold for silence detection (raised from 0.01)
 
@@ -30,16 +30,14 @@ class Config:
     VAD_MAX_CHUNK_SIZE = 10.0  # Maximum chunk size (VAD mode)
 
     # Whisper settings
-    WHISPER_MODEL = os.environ.get('WHISPER_MODEL', 'small')
-    WHISPER_BACKEND = os.environ.get('WHISPER_BACKEND', 'whisper_trt')  # whisper_trt, faster_whisper, or whisper
+    WHISPER_MODEL = os.environ.get('WHISPER_MODEL', 'large-v3')
+    WHISPER_BACKEND = os.environ.get('WHISPER_BACKEND', 'faster_whisper')  # faster_whisper for Windows
+    WHISPER_COMPUTE_TYPE = os.environ.get('WHISPER_COMPUTE_TYPE', 'float16')  # FP16 for best quality
     WHISPER_TASK = 'translate'  # 'translate' for JP->target, 'transcribe' for JP->JP
     WHISPER_LANGUAGE = 'ja'  # Source language (Japanese)
     WHISPER_TARGET_LANGUAGE = os.environ.get('WHISPER_TARGET_LANGUAGE', 'en')  # Target: en, fr, es, de, etc.
-    WHISPER_BEAM_SIZE = int(os.environ.get('WHISPER_BEAM_SIZE', 3))  # Lower = faster, less accurate
+    WHISPER_BEAM_SIZE = int(os.environ.get('WHISPER_BEAM_SIZE', 5))  # 5 for large-v3 (better quality)
     WHISPER_TEMPERATURE = 0.0  # Deterministic output (no randomness)
-    # Compute type for faster_whisper: float16, int8_float16, int8
-    # int8_float16 uses ~50% less VRAM - enables large-v3 on Jetson Orin Nano
-    WHISPER_COMPUTE_TYPE = os.environ.get('WHISPER_COMPUTE_TYPE', None)
 
     # Translation (if using separate translation model)
     USE_SEPARATE_TRANSLATION = False  # Set to True to use NLLB/other

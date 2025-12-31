@@ -107,6 +107,16 @@ class SubtitleServer:
         self.model_switching: bool = False
         self.model_switch_callback: Optional[Callable] = None
 
+        # Mode switching support (fixed vs vad)
+        self.current_mode: str = 'fixed'
+        self.mode_switch_callback: Optional[Callable] = None
+        self.system_status: Dict[str, Any] = {
+            'mode': 'fixed',
+            'chunk_size': 2.5,
+            'vad_loaded': False,
+            'processing_active': False,
+        }
+
         # Language support
         self.current_target_language: str = 'en'  # Default to English
 
@@ -159,7 +169,11 @@ class SubtitleServer:
 
         @self.app.route('/status')
         def status():
-            return jsonify({'paused': self.paused})
+            return jsonify({
+                'paused': self.paused,
+                'mode': self.current_mode,
+                'system_status': self.system_status,
+            })
 
         @self.app.route('/shutdown', methods=['POST'])
         def shutdown():
@@ -251,6 +265,35 @@ class SubtitleServer:
                 return jsonify({'status': 'switching', 'model': model_id})
             else:
                 return jsonify({'error': 'Model switching not configured'}), 500
+
+        @self.app.route('/mode/switch', methods=['POST'])
+        def switch_mode():
+            """Switch processing mode (fixed vs vad)"""
+            data = request.get_json() or {}
+            mode = data.get('mode')
+
+            if not mode or mode not in ['fixed', 'vad']:
+                return jsonify({'error': 'Invalid mode. Must be "fixed" or "vad"'}), 400
+
+            if mode == self.current_mode:
+                return jsonify({'status': 'already_active', 'mode': mode})
+
+            # Trigger mode switch via callback
+            if self.mode_switch_callback:
+                try:
+                    success = self.mode_switch_callback(mode)
+                    if success:
+                        self.current_mode = mode
+                        self.socketio.emit('mode_switched', {'mode': mode})
+                        logger.info(f"Processing mode switched to: {mode}")
+                        return jsonify({'status': 'switched', 'mode': mode})
+                    else:
+                        return jsonify({'error': 'Mode switch failed'}), 500
+                except Exception as e:
+                    logger.error(f"Mode switch error: {e}")
+                    return jsonify({'error': str(e)}), 500
+            else:
+                return jsonify({'error': 'Mode switching not configured'}), 500
 
         @self.app.route('/language/switch', methods=['POST'])
         def switch_language():
@@ -394,6 +437,17 @@ class SubtitleServer:
         thread.start()
         logger.info(f"Web server started in background on http://{self.host}:{self.port}")
         return thread
+
+    def set_mode_switch_callback(self, callback: Callable):
+        """Set callback for mode switching"""
+        self.mode_switch_callback = callback
+
+    def update_system_status(self, status_dict: Dict[str, Any]):
+        """Update system status (mode, chunk_size, vad_loaded, etc.)"""
+        self.system_status.update(status_dict)
+        self.current_mode = status_dict.get('mode', self.current_mode)
+        # Broadcast to all clients
+        self.socketio.emit('system_status_update', self.system_status)
 
 
 def create_server(config=None) -> SubtitleServer:

@@ -43,10 +43,11 @@ services:
     # Windows GPU can handle float16 and larger beam size for best quality
     environment:
       - AUDIO_DEVICE=0
+      - PROCESSING_MODE=fixed
       - WHISPER_MODEL=${WHISPER_MODEL:-large-v3}
       - WHISPER_BACKEND=${WHISPER_BACKEND:-faster_whisper}
       - WHISPER_COMPUTE_TYPE=${WHISPER_COMPUTE_TYPE:-float16}
-      - WHISPER_BEAM_SIZE=${WHISPER_BEAM_SIZE:-5}
+      - WHISPER_BEAM_SIZE=${WHISPER_BEAM_SIZE:-10}
       - WEB_PORT=5000
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
       - PULSE_SERVER=unix:/tmp/pulse-socket

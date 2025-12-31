@@ -54,6 +54,11 @@ HALLUCINATION_PATTERNS = [
     r'^please subscribe[\.!?, ]*$',
     r'^subscribe[\.!?, ]*$',
 
+    # Common hallucinations on music/noise
+    r"^i'?m? (going to|gonna) kill you[\.!?, ]*$",
+    r"^i'?m? (going to|gonna) die[\.!?, ]*$",
+    r"^i don'?t know[\.!?, ]*$",
+
     # DISABLED - These were blocking legitimate translations
     # Only keeping core non-speech hallucinations (thank you, subscribe, etc.)
 ]
@@ -391,10 +396,10 @@ class FasterWhisperEngine(WhisperEngine):
             temperature=config.WHISPER_TEMPERATURE,  # Deterministic output (0.0 = no randomness)
             vad_filter=False,  # DISABLED - was filtering too aggressively and blocking real speech
             max_initial_timestamp=1.0,  # Reduced from 2.0 to reduce hallucinations
-            hallucination_silence_threshold=1.5,  # Increased from 0.5 - more aggressive filtering
+            hallucination_silence_threshold=2.0,  # Higher = more filtering of silence hallucinations
             compression_ratio_threshold=2.4,  # Skip if compression is too high (repetitive text)
             log_prob_threshold=-1.0,  # Skip low confidence segments
-            no_speech_threshold=0.7,  # Increased to 0.7 for Japanese TV (filters music/background)
+            no_speech_threshold=0.5,  # LOWERED from 0.7 - was skipping too much dialogue
             condition_on_previous_text=False,  # DISABLE - was causing repetition loops
             initial_prompt=None,  # No context prompt
         )
