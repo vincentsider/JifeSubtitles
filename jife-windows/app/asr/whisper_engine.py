@@ -318,6 +318,22 @@ def create_engine(
     Returns:
         Engine instance (WhisperEngine or SeamlessM4TEngine)
     """
+    # Handle Pipeline (Option C): Whisper + SeamlessM4T text-to-text
+    if backend == 'pipeline':
+        from app.asr.pipeline_engine import PipelineEngine
+
+        # Use provided model_name for Whisper, default to large-v3
+        whisper_model = model_name if model_name not in ['pipeline'] else 'large-v3'
+
+        engine = PipelineEngine(
+            whisper_model=whisper_model,
+            whisper_compute_type=compute_type or 'float16',
+            whisper_beam_size=beam_size,
+            seamless_model='seamless-m4t-v2-large',
+        )
+        engine.load()
+        return engine
+
     # Handle SeamlessM4T separately (different architecture)
     if backend == 'seamless_m4t':
         from app.asr.seamless_engine import SeamlessM4TEngine
@@ -325,7 +341,7 @@ def create_engine(
 
         # Default to large model for best quality
         if model_name in ['small', 'base', 'tiny', 'medium', 'large', 'large-v3']:
-            model_name = 'seamlessM4T_v2_large'
+            model_name = 'seamless-m4t-v2-large'
 
         dtype = torch.float16 if compute_type in ['float16', None] else torch.float32
         engine = SeamlessM4TEngine(model_name=model_name, dtype=dtype)
@@ -340,7 +356,7 @@ def create_engine(
     }
 
     if backend not in engines:
-        raise ValueError(f"Unknown backend: {backend}. Available: {list(engines.keys()) + ['seamless_m4t']}")
+        raise ValueError(f"Unknown backend: {backend}. Available: {list(engines.keys()) + ['seamless_m4t', 'pipeline']}")
 
     # Pass compute_type only to faster_whisper
     if backend == 'faster_whisper':

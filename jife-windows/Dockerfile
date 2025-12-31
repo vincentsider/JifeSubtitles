@@ -8,7 +8,8 @@
 # Run:   docker compose up -d
 # =============================================================================
 
-FROM nvidia/cuda:12.1.0-cudnn8-runtime-ubuntu22.04
+# Use CUDA 12.4 with cuDNN 9 (required by faster-whisper/ctranslate2)
+FROM nvidia/cuda:12.4.1-cudnn-runtime-ubuntu22.04
 
 # Avoid interactive prompts during build
 ENV DEBIAN_FRONTEND=noninteractive
@@ -22,6 +23,7 @@ RUN apt-get update && apt-get install -y \
     portaudio19-dev \
     libasound2-plugins \
     alsa-utils \
+    pulseaudio-utils \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
@@ -30,10 +32,10 @@ RUN python3 -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 # Install Python dependencies
-# Note: We use CUDA 12.x compatible versions
-# PyTorch with CUDA 12.1 support for SeamlessM4T
+# Note: We use CUDA 12.4 compatible versions
+# PyTorch with CUDA 12.4 support for SeamlessM4T
 RUN pip install --upgrade pip && \
-    pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu121 && \
+    pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu124 && \
     pip install \
     faster-whisper>=1.0.0 \
     flask>=3.0.0 \

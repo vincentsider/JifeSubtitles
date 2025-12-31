@@ -25,7 +25,7 @@ class SeamlessM4TEngine:
 
     def __init__(
         self,
-        model_name: str = "seamlessM4T_v2_large",
+        model_name: str = "seamless-m4t-v2-large",
         device: str = "cuda",
         dtype: torch.dtype = torch.float16,
     ):
@@ -55,13 +55,15 @@ class SeamlessM4TEngine:
             # Load processor and model
             logger.info("Loading processor...")
             self.processor = AutoProcessor.from_pretrained(
-                f"facebook/{self.model_name}"
+                f"facebook/{self.model_name}",
+                trust_remote_code=True,
             )
 
             logger.info(f"Loading model to {self.device} with {self.dtype}...")
             self.model = SeamlessM4Tv2ForSpeechToText.from_pretrained(
                 f"facebook/{self.model_name}",
                 torch_dtype=self.dtype,
+                trust_remote_code=True,
             ).to(self.device)
 
             # Set to eval mode
@@ -126,7 +128,7 @@ class SeamlessM4TEngine:
             # Process audio
             # SeamlessM4T expects 16kHz audio
             inputs = self.processor(
-                audios=audio,
+                audio=audio,
                 sampling_rate=16000,
                 return_tensors="pt",
             )
@@ -139,7 +141,6 @@ class SeamlessM4TEngine:
                 output_tokens = self.model.generate(
                     **inputs,
                     tgt_lang=target_language,
-                    generate_speech=False,  # Text only, no speech output
                     num_beams=5,
                     max_new_tokens=256,
                 )

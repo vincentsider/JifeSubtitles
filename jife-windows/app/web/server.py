@@ -14,36 +14,52 @@ from flask_socketio import SocketIO
 logger = logging.getLogger(__name__)
 
 # Available models for the frontend selector
-# Sorted by recommended order for Jetson Orin Nano (7.4GB RAM)
+# Optimized for Windows PC with NVIDIA GPU (RTX 20xx/30xx/40xx)
 # 'id' format: model_name:compute_type:beam_size for unique identification
 #
 # NOTE: large-v3-turbo is NOT included because it does NOT support translation.
 # Turbo was fine-tuned only on transcription data, not translation data.
 # See: https://github.com/SYSTRAN/faster-whisper/issues/1237
 AVAILABLE_MODELS = [
+    # Option A: Whisper with direct translation (baseline)
     {
-        'id': 'large-v3:int8:1',
+        'id': 'large-v3:float16:5',
         'model': 'large-v3',
-        'name': 'Large-v3 INT8 (Best)',
-        'description': 'Best accuracy for Japanese, supports translation',
-        'compute_type': 'int8',
-        'beam_size': 1,
+        'name': 'Whisper Large-v3 (Option A)',
+        'description': 'Whisper direct translation. Fast, good quality.',
+        'compute_type': 'float16',
+        'beam_size': 5,
+        'backend': 'faster_whisper',
     },
+    # Option B: SeamlessM4T speech-to-text translation
     {
-        'id': 'medium:int8:3',
+        'id': 'seamless:float16:5',
+        'model': 'seamless-m4t-v2-large',
+        'name': 'SeamlessM4T v2 (Option B)',
+        'description': 'Meta speech translation model. Better for messy audio.',
+        'compute_type': 'float16',
+        'beam_size': 5,
+        'backend': 'seamless_m4t',
+    },
+    # Option C: Pipeline (Whisper transcribe + SeamlessM4T translate)
+    {
+        'id': 'pipeline:float16:5',
+        'model': 'large-v3',
+        'name': 'Whisper + SeamlessM4T (Option C)',
+        'description': 'Two-stage: Whisper transcribes JP, SeamlessM4T translates. Highest quality, higher latency.',
+        'compute_type': 'float16',
+        'beam_size': 5,
+        'backend': 'pipeline',
+    },
+    # Faster options
+    {
+        'id': 'medium:float16:5',
         'model': 'medium',
-        'name': 'Medium INT8',
-        'description': 'Good balance of speed/accuracy',
-        'compute_type': 'int8',
-        'beam_size': 3,
-    },
-    {
-        'id': 'small:int8:3',
-        'model': 'small',
-        'name': 'Small (Fastest)',
-        'description': 'Fastest, lower accuracy',
-        'compute_type': 'int8',
-        'beam_size': 3,
+        'name': 'Whisper Medium (Faster)',
+        'description': 'Faster than large-v3, still good quality',
+        'compute_type': 'float16',
+        'beam_size': 5,
+        'backend': 'faster_whisper',
     },
 ]
 
@@ -94,8 +110,10 @@ class SubtitleServer:
         self.last_subtitle_time = None
         self.speaker_colors = ['#ffffff', '#00ffff', '#ffff00', '#ff88ff']  # white, cyan, yellow, pink
 
-        # Hallucination filter - common Whisper hallucinations on silence/noise
+        # Hallucination filter - common hallucinations on silence/noise
+        # Includes patterns from both Whisper and SeamlessM4T
         self.hallucination_phrases = [
+            # Common Whisper hallucinations
             'thank you for watching',
             'thank you for your viewing',
             'thanks for watching',
@@ -112,6 +130,14 @@ class SubtitleServer:
             'subtitles by',
             'captions by',
             'translated by',
+            # SeamlessM4T repetitive hallucinations
+            "i'm going to be able to",
+            "i'm going to be",
+            "going to be able to do it",
+            "i'm not going to be able",
+            "i don't know what to do",
+            "i don't know what to say",
+            "i don't know",
         ]
 
         # Model switching support
@@ -237,11 +263,12 @@ class SubtitleServer:
                 # Start switch in background thread
                 def do_switch():
                     try:
-                        # Pass model name (not id), compute_type, and beam_size
+                        # Pass model name (not id), compute_type, beam_size, and backend
                         success = self.model_switch_callback(
                             model_config['model'],
                             model_config['compute_type'],
-                            model_config.get('beam_size', 5)
+                            model_config.get('beam_size', 5),
+                            model_config.get('backend', 'faster_whisper')
                         )
                         if success:
                             self.current_model = model_id
@@ -287,11 +314,25 @@ class SubtitleServer:
             logger.info(f"Client disconnected. Total: {self.stats['clients_connected']}")
 
     def _is_hallucination(self, text: str) -> bool:
-        """Check if text is a common Whisper hallucination"""
+        """Check if text is a common hallucination or repetitive garbage"""
         text_lower = text.lower().strip()
+
+        # Check for known hallucination phrases
         for phrase in self.hallucination_phrases:
             if phrase in text_lower:
                 return True
+
+        # Check for repetitive patterns (e.g., "I'm going to, I'm going to, I'm going to")
+        # Split into words and check for excessive repetition
+        words = text_lower.split()
+        if len(words) >= 6:
+            # Check if any 3-word phrase repeats 3+ times
+            for i in range(len(words) - 8):
+                phrase = ' '.join(words[i:i+3])
+                count = text_lower.count(phrase)
+                if count >= 3:
+                    return True
+
         return False
 
     def send_subtitle(

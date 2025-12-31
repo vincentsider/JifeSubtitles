@@ -152,17 +152,23 @@ def processing_loop(
     logger.info("Processing loop stopped")
 
 
-def switch_model(model_name: str, compute_type: str, beam_size: int = 5) -> bool:
+def switch_model(model_name: str, compute_type: str, beam_size: int = 5, backend: str = 'faster_whisper') -> bool:
     """
-    Switch to a different Whisper model.
+    Switch to a different model/engine.
     Called from web server in a background thread.
     Returns True on success, False on failure.
 
     IMPORTANT: We MUST delete the old model and free GPU memory BEFORE
-    loading the new model, otherwise large models cause CUDA OOM on 7.4GB Jetson.
+    loading the new model, otherwise large models cause CUDA OOM.
+
+    Args:
+        model_name: Model name (e.g., 'large-v3', 'seamless-m4t-v2-large')
+        compute_type: Compute type ('float16', 'int8', etc.)
+        beam_size: Beam size for decoding
+        backend: Engine backend ('faster_whisper', 'seamless_m4t', 'pipeline')
     """
     global whisper_engine
-    logger.info(f"Switching model to: {model_name} (compute_type={compute_type}, beam_size={beam_size})")
+    logger.info(f"Switching to: {model_name} (backend={backend}, compute_type={compute_type}, beam_size={beam_size})")
 
     try:
         import gc
@@ -193,9 +199,9 @@ def switch_model(model_name: str, compute_type: str, beam_size: int = 5) -> bool
         time.sleep(0.5)
 
         # Step 3: Now load new model with GPU memory available
-        logger.info(f"Loading new model: {model_name}...")
+        logger.info(f"Loading new model: {model_name} (backend={backend})...")
         new_engine = create_engine(
-            backend='faster_whisper',
+            backend=backend,
             model_name=model_name,
             beam_size=beam_size,
             compute_type=compute_type,
@@ -269,8 +275,23 @@ def main():
         )
         logger.info("Whisper model loaded successfully")
 
-        # Set current model in web server and register switch callback
-        web_server.set_current_model(config.WHISPER_MODEL)
+        # Set current model ID in web server based on backend and model
+        # The model ID format is: model_name:compute_type:beam_size
+        # Need to find the matching model from AVAILABLE_MODELS
+        initial_model_id = None
+        from app.web.server import AVAILABLE_MODELS
+        for m in AVAILABLE_MODELS:
+            if m['backend'] == config.WHISPER_BACKEND:
+                # Found matching backend - use this model's ID
+                initial_model_id = m['id']
+                break
+
+        if initial_model_id is None:
+            # Fallback: construct ID from config
+            initial_model_id = f"{config.WHISPER_MODEL}:{config.WHISPER_COMPUTE_TYPE}:{config.WHISPER_BEAM_SIZE}"
+
+        logger.info(f"Initial model ID: {initial_model_id}")
+        web_server.set_current_model(initial_model_id)
         web_server.set_model_switch_callback(switch_model)
 
     except Exception as e:

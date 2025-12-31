@@ -55,3 +55,7 @@ jife-faster-whisper.tar.gz
 
 # Claude local state
 .claude/
+
+# HuggingFace model cache (downloaded at runtime)
+jife-windows/cache/
+cache/

@@ -12,14 +12,15 @@
 # Prerequisites:
 #   - Docker Desktop with WSL2 backend
 #   - NVIDIA Container Toolkit installed in WSL2
-#   - USB audio device attached to WSL2 (via usbipd)
 #
 # Engine Options (WHISPER_BACKEND):
-#   - faster_whisper: (DEFAULT) Whisper large-v3 - our stable baseline
-#   - seamless_m4t:   SeamlessM4T v2 - Meta's speech translation model
+#   - faster_whisper: (DEFAULT) Option A - Whisper large-v3 direct translation
+#   - seamless_m4t:   Option B - SeamlessM4T v2 speech-to-text translation
+#   - pipeline:       Option C - Whisper transcribe + SeamlessM4T text translation
 #
 # To switch engines:
 #   WHISPER_BACKEND=seamless_m4t docker compose up -d
+#   WHISPER_BACKEND=pipeline docker compose up -d
 # =============================================================================
 
 services:
@@ -35,7 +36,6 @@ services:
     command: ["python3", "/app/app/main.py"]
 
     # NVIDIA GPU support for Windows/WSL2
-    # This syntax works with Docker Compose v2+
     deploy:
       resources:
         reservations:
@@ -46,36 +46,31 @@ services:
 
     restart: unless-stopped
 
-    # Audio device passthrough
-    # Make sure USB audio is attached to WSL2 via usbipd
-    # TEMPORARILY DISABLED - Enable after attaching USB audio via usbipd
-    # devices:
-    #   - /dev/snd:/dev/snd
-
-    # group_add:
-    #   - audio
+    # Run as WSL user for PulseAudio access
+    user: "1000:1000"
 
     # Environment variables
-    # Windows GPU can handle float16 and larger beam size for best quality
     environment:
-      - AUDIO_DEVICE=${AUDIO_DEVICE:-plughw:1,0}
+      - PULSE_SERVER=unix:/run/user/1000/pulse/native
+      - AUDIO_DEVICE=${AUDIO_DEVICE:-0}
       - WHISPER_MODEL=${WHISPER_MODEL:-large-v3}
       - WHISPER_BACKEND=${WHISPER_BACKEND:-faster_whisper}
       - WHISPER_COMPUTE_TYPE=${WHISPER_COMPUTE_TYPE:-float16}
       - WHISPER_BEAM_SIZE=${WHISPER_BEAM_SIZE:-5}
       - WEB_PORT=5000
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - HF_HOME=/app/cache/huggingface
+      - XDG_CACHE_HOME=/app/cache
 
     ports:
       - "5000:5000"
 
-    # Mount app code for development (can edit without rebuild)
     volumes:
       - ./app:/app/app:ro
-      # Cache for downloaded models
-      - whisper_cache:/root/.cache/huggingface
+      - ./cache:/app/cache
+      - /mnt/wslg/runtime-dir/pulse:/run/user/1000/pulse
+      - /mnt/wslg:/mnt/wslg
 
-    # Health check
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
       interval: 30s
