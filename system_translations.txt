@@ -1,0 +1,26 @@
+System Translations
+Duration: 120 seconds
+Total Subtitles: 19
+
+1. [0.33s] My hands are tied...
+2. [1.10s] Slightly
+3. [0.47s] It's been a long time since I last saw you.
+4. [0.42s] It's okay if you don't like it.
+5. [0.42s] Translated by Releska
+6. [0.54s] I don't think I can do this.
+7. [0.46s] Are you okay?
+8. [0.36s] Let's talk.
+9. [0.33s] Hmm?
+10. [0.31s] Hmm...
+11. [2.54s] Now, let's get started!
+12. [2.73s] What are you doing here?
+13. [0.43s] Teach me, okay?
+14. [0.40s] What should I do, Mizuki-chan?
+15. [2.51s] What the hell is this?
+16. [0.42s] What are you doing?
+17. [0.46s] What's wrong with you?
+18. [0.36s] Then, I'll teach you.
+19. [0.53s] What are you doing in this store?
+
+--- COMBINED TEXT ---
+My hands are tied... Slightly It's been a long time since I last saw you. It's okay if you don't like it. Translated by Releska I don't think I can do this. Are you okay? Let's talk. Hmm? Hmm... Now, let's get started! What are you doing here? Teach me, okay? What should I do, Mizuki-chan? What the hell is this? What are you doing? What's wrong with you? Then, I'll teach you. What are you doing in this store?

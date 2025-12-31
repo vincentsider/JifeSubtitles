@@ -8,10 +8,23 @@
 # Run:   docker compose up -d
 # =============================================================================
 
-FROM nvidia/cuda:12.1.0-cudnn8-runtime-ubuntu22.04
+FROM nvidia/cuda:12.1.0-cudnn8-devel-ubuntu22.04
 
 # Avoid interactive prompts during build
 ENV DEBIAN_FRONTEND=noninteractive
+
+# Install cuDNN 9 manually
+RUN apt-get update && apt-get install -y wget && \
+    wget https://developer.download.nvidia.com/compute/cudnn/9.1.0/local_installers/cudnn-local-repo-ubuntu2204-9.1.0_1.0-1_amd64.deb && \
+    dpkg -i cudnn-local-repo-ubuntu2204-9.1.0_1.0-1_amd64.deb && \
+    cp /var/cudnn-local-repo-ubuntu2204-9.1.0/cudnn-*-keyring.gpg /usr/share/keyrings/ && \
+    apt-get update && \
+    apt-get install -y cudnn-cuda-12 && \
+    rm cudnn-local-repo-ubuntu2204-9.1.0_1.0-1_amd64.deb && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Set library path for cuDNN 9 runtime
+ENV LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -38,7 +51,12 @@ RUN pip install --upgrade pip && \
     flask-socketio>=5.3.0 \
     sounddevice>=0.4.6 \
     scipy>=1.11.0 \
-    numpy>=1.24.0
+    numpy>=1.24.0 \
+    transformers>=4.35.0 \
+    sentencepiece>=0.1.99 \
+    protobuf>=3.20.0 \
+    torch>=2.0.0 \
+    torchaudio>=2.0.0
 
 # Set working directory
 WORKDIR /app

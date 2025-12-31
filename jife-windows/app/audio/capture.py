@@ -31,6 +31,7 @@ class AudioCapture:
         sample_rate: int = 16000,
         channels: int = 1,
         chunk_duration: float = 3.0,
+        chunk_overlap: float = 0.5,
         callback: Optional[Callable[[np.ndarray], None]] = None,
         output_queue: Optional[queue.Queue] = None,
     ):
@@ -42,6 +43,7 @@ class AudioCapture:
             sample_rate: Sample rate in Hz (16000 for Whisper)
             channels: Number of audio channels (1 for mono)
             chunk_duration: Duration of each audio chunk in seconds
+            chunk_overlap: Overlap between chunks in seconds (for context preservation)
             callback: Optional callback function for each audio chunk
             output_queue: Optional queue to put audio chunks
         """
@@ -49,6 +51,7 @@ class AudioCapture:
         self.sample_rate = sample_rate  # Target rate for Whisper (16kHz)
         self.channels = channels
         self.chunk_duration = chunk_duration
+        self.chunk_overlap = chunk_overlap
         self.callback = callback
         self.output_queue = output_queue
 
@@ -58,7 +61,12 @@ class AudioCapture:
 
         # Buffer sizes at native rate
         self.native_samples_per_chunk = int(self.native_rate * chunk_duration)
+        self.native_samples_overlap = int(self.native_rate * chunk_overlap)
+        self.native_samples_stride = self.native_samples_per_chunk - self.native_samples_overlap
+
         self.samples_per_chunk = int(sample_rate * chunk_duration)
+        self.samples_overlap = int(sample_rate * chunk_overlap)
+        self.samples_stride = self.samples_per_chunk - self.samples_overlap
 
         # Use numpy array ring buffer instead of Python list for efficiency
         # Pre-allocate buffer for ~10 seconds of audio at native rate
@@ -95,7 +103,7 @@ class AudioCapture:
             self.buffer[self.buffer_size:self.buffer_size + n_samples] = audio
             self.buffer_size += n_samples
 
-            # Process complete chunks (at native sample rate)
+            # Process complete chunks using sliding window with overlap
             while self.buffer_size >= self.native_samples_per_chunk:
                 # Extract chunk directly from buffer (no copy until resample)
                 chunk = self.buffer[:self.native_samples_per_chunk]
@@ -104,10 +112,11 @@ class AudioCapture:
                 # Simple approach: take every 3rd sample after low-pass filtering
                 resampled = self._fast_resample(chunk)
 
-                # Shift remaining data to front of buffer (efficient with numpy)
-                remaining = self.buffer_size - self.native_samples_per_chunk
+                # Shift buffer by stride (not full chunk) to keep overlap
+                # This preserves context across chunk boundaries
+                remaining = self.buffer_size - self.native_samples_stride
                 if remaining > 0:
-                    self.buffer[:remaining] = self.buffer[self.native_samples_per_chunk:self.buffer_size]
+                    self.buffer[:remaining] = self.buffer[self.native_samples_stride:self.buffer_size]
                 self.buffer_size = remaining
 
                 # Deliver chunk
@@ -115,13 +124,14 @@ class AudioCapture:
 
     def _fast_resample(self, chunk: np.ndarray) -> np.ndarray:
         """
-        Fast 3:1 downsampling from 48kHz to 16kHz.
-        Uses simple decimation which is much faster than scipy.signal.resample.
+        Proper 3:1 downsampling from 48kHz to 16kHz with anti-aliasing.
+        Uses scipy.signal.resample_poly for high-quality resampling.
         """
-        # Simple decimation: take every 3rd sample
-        # For speech, this works well enough and is ~10x faster than FFT resample
-        # Note: chunk is already float32, so just copy the strided view
-        return np.array(chunk[::3], dtype=np.float32)
+        from scipy import signal
+        # Use polyphase resampling with proper anti-aliasing filter
+        # This prevents aliasing that causes Whisper hallucinations
+        # resample_poly(signal, up, down) - here we go from 48kHz to 16kHz (down by 3)
+        return signal.resample_poly(chunk, 1, 3).astype(np.float32)
 
     def _deliver_chunk(self, chunk: np.ndarray):
         """Deliver audio chunk to callback or queue"""

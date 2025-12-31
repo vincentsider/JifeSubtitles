@@ -39,34 +39,27 @@ services:
 
     restart: unless-stopped
 
-    # Audio device passthrough
-    # Make sure USB audio is attached to WSL2 via usbipd
-    # TEMPORARILY DISABLED - Enable after attaching USB audio via usbipd
-    # devices:
-    #   - /dev/snd:/dev/snd
-
-    # group_add:
-    #   - audio
-
     # Environment variables
     # Windows GPU can handle float16 and larger beam size for best quality
     environment:
-      - AUDIO_DEVICE=${AUDIO_DEVICE:-plughw:1,0}
+      - AUDIO_DEVICE=0
       - WHISPER_MODEL=${WHISPER_MODEL:-large-v3}
       - WHISPER_BACKEND=${WHISPER_BACKEND:-faster_whisper}
       - WHISPER_COMPUTE_TYPE=${WHISPER_COMPUTE_TYPE:-float16}
       - WHISPER_BEAM_SIZE=${WHISPER_BEAM_SIZE:-5}
       - WEB_PORT=5000
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - PULSE_SERVER=unix:/tmp/pulse-socket
 
     ports:
       - "5000:5000"
 
     # Mount app code for development (can edit without rebuild)
+    # PulseAudio for Windows audio (VB-CABLE)
     volumes:
       - ./app:/app/app:ro
-      # Cache for downloaded models
       - whisper_cache:/root/.cache/huggingface
+      - /mnt/wslg/PulseServer:/tmp/pulse-socket
 
     # Health check
     healthcheck:

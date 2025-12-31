@@ -1,0 +1,15 @@
+{
+  "system": {
+    "text": "",
+    "words": 0,
+    "subtitles": 0
+  },
+  "openai": {
+    "text": "",
+    "words": 0
+  },
+  "comparison": {
+    "similarity": 0,
+    "common_words": 0
+  }
+}

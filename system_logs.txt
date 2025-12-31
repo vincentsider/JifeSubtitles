@@ -1,0 +1,500 @@
+2025-12-30 22:59:24,135 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 1.0 (-1.434396 < -1.000000)
+2025-12-30 22:59:24,136 [DEBUG] faster_whisper: Reset prompt. prompt_reset_on_temperature threshold is met 1.000000 > 0.500000
+2025-12-30 22:59:24,138 [DEBUG] app.asr.whisper_engine: Filtered repetitive hallucination: 'I'm sorry, I'm sorry, I'm sorry!'
+2025-12-30 22:59:24,138 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (2.90s, RTF: 1.93)
+2025-12-30 22:59:24,138 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 22:59:24,152 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 22:59:24,239 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.7453
+2025-12-30 22:59:24,632 [DEBUG] app.asr.whisper_engine: faster-whisper: 'It's been a while since I've been here.' (0.49s, RTF: 0.33)
+2025-12-30 22:59:24,632 [DEBUG] app.web.server: Sent subtitle: It's been a while since I've been here....
+2025-12-30 22:59:24,632 [INFO] subtitle-system: [0.49s] It's been a while since I've been here.
+2025-12-30 22:59:24,632 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 22:59:24,636 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 22:59:25,003 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.0 (-1.092673 < -1.000000)
+2025-12-30 22:59:25,395 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.2 (-1.092673 < -1.000000)
+2025-12-30 22:59:25,733 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8637
+2025-12-30 22:59:25,835 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.4 (-1.092673 < -1.000000)
+2025-12-30 22:59:26,356 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.6 (-1.092673 < -1.000000)
+2025-12-30 22:59:26,766 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.8 (-1.291465 < -1.000000)
+2025-12-30 22:59:27,136 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 1.0 (-1.933008 < -1.000000)
+2025-12-30 22:59:27,136 [DEBUG] faster_whisper: Reset prompt. prompt_reset_on_temperature threshold is met 1.000000 > 0.500000
+2025-12-30 22:59:27,140 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'I'm sorry.'
+2025-12-30 22:59:27,140 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (2.51s, RTF: 1.67)
+2025-12-30 22:59:27,140 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 22:59:27,142 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 22:59:27,257 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8310
+2025-12-30 22:59:27,575 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'Thank you very much.'
+2025-12-30 22:59:27,575 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.43s, RTF: 0.29)
+2025-12-30 22:59:27,575 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 22:59:27,577 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 22:59:27,958 [DEBUG] app.asr.whisper_engine: faster-whisper: 'FUUUUUUUUUUUUUUU' (0.38s, RTF: 0.26)
+2025-12-30 22:59:27,958 [DEBUG] app.web.server: Sent subtitle: FUUUUUUUUUUUUUUU...
+2025-12-30 22:59:27,959 [INFO] subtitle-system: [0.38s] FUUUUUUUUUUUUUUU
+2025-12-30 22:59:28,750 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8061
+2025-12-30 22:59:28,750 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 22:59:28,752 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 22:59:29,139 [DEBUG] faster_whisper: Compression ratio threshold is not met with temperature 0.0 (3.083333 > 2.400000)
+2025-12-30 22:59:29,139 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.0 (-1.048475 < -1.000000)
+2025-12-30 22:59:29,139 [DEBUG] faster_whisper: No speech threshold is met (0.708169 > 0.650000)
+2025-12-30 22:59:29,141 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.39s, RTF: 0.26)
+2025-12-30 22:59:30,254 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.7467
+2025-12-30 22:59:30,254 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 22:59:30,261 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 22:59:30,719 [DEBUG] faster_whisper: Compression ratio threshold is not met with temperature 0.0 (4.000000 > 2.400000)
+2025-12-30 22:59:31,135 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.2 (-1.251008 < -1.000000)
+2025-12-30 22:59:31,767 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8599
+2025-12-30 22:59:33,252 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.9098
+2025-12-30 22:59:34,307 [DEBUG] faster_whisper: Compression ratio threshold is not met with temperature 0.4 (52.294118 > 2.400000)
+2025-12-30 22:59:34,754 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.9179
+2025-12-30 22:59:34,876 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.6 (-1.148395 < -1.000000)
+2025-12-30 22:59:35,232 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.8 (-1.297554 < -1.000000)
+2025-12-30 22:59:35,714 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 1.0 (-2.204001 < -1.000000)
+2025-12-30 22:59:35,715 [DEBUG] faster_whisper: Reset prompt. prompt_reset_on_temperature threshold is met 1.000000 > 0.500000
+2025-12-30 22:59:35,720 [DEBUG] app.asr.whisper_engine: faster-whisper: 'Oh, my God!' (5.47s, RTF: 3.64)
+2025-12-30 22:59:35,720 [DEBUG] app.web.server: Sent subtitle: Oh, my God!...
+2025-12-30 22:59:35,721 [INFO] subtitle-system: [5.47s] Oh, my God!
+2025-12-30 22:59:35,721 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 22:59:35,723 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 22:59:36,124 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.0 (-1.064069 < -1.000000)
+2025-12-30 22:59:36,124 [DEBUG] faster_whisper: No speech threshold is met (0.697727 > 0.650000)
+2025-12-30 22:59:36,126 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.41s, RTF: 0.27)
+2025-12-30 22:59:36,126 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 22:59:36,129 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 22:59:36,227 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8524
+2025-12-30 22:59:36,560 [DEBUG] app.asr.whisper_engine: faster-whisper: 'What's wrong with you?' (0.43s, RTF: 0.29)
+2025-12-30 22:59:36,560 [DEBUG] app.web.server: Sent subtitle: What's wrong with you?...
+2025-12-30 22:59:36,561 [INFO] subtitle-system: [0.43s] What's wrong with you?
+2025-12-30 22:59:36,561 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 22:59:36,563 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 22:59:36,986 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.0 (-1.121996 < -1.000000)
+2025-12-30 22:59:37,472 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.2 (-1.100502 < -1.000000)
+2025-12-30 22:59:37,761 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.7083
+2025-12-30 22:59:38,023 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.4 (-1.185081 < -1.000000)
+2025-12-30 22:59:38,595 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.6 (-1.311108 < -1.000000)
+2025-12-30 22:59:39,205 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.8 (-1.590815 < -1.000000)
+2025-12-30 22:59:39,235 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.7831
+2025-12-30 22:59:39,788 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 1.0 (-2.049602 < -1.000000)
+2025-12-30 22:59:39,788 [DEBUG] faster_whisper: Reset prompt. prompt_reset_on_temperature threshold is met 1.000000 > 0.500000
+2025-12-30 22:59:39,791 [DEBUG] app.asr.whisper_engine: faster-whisper: 'I'm not going to let you get away with this!' (3.23s, RTF: 2.15)
+2025-12-30 22:59:39,791 [DEBUG] app.web.server: Sent subtitle: I'm not going to let you get away with this!...
+2025-12-30 22:59:39,792 [INFO] subtitle-system: [3.23s] I'm not going to let you get away with this!
+2025-12-30 22:59:39,792 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 22:59:39,795 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 22:59:40,214 [DEBUG] app.asr.whisper_engine: faster-whisper: 'Stop it!' (0.42s, RTF: 0.28)
+2025-12-30 22:59:40,214 [DEBUG] app.web.server: Sent subtitle: Stop it!...
+2025-12-30 22:59:40,214 [INFO] subtitle-system: [0.42s] Stop it!
+2025-12-30 22:59:40,215 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 22:59:40,217 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 22:59:40,728 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.7792
+2025-12-30 22:59:40,747 [DEBUG] app.asr.whisper_engine: faster-whisper: 'Are you okay, Harumi?' (0.53s, RTF: 0.35)
+2025-12-30 22:59:40,747 [DEBUG] app.web.server: Sent subtitle: Are you okay, Harumi?...
+2025-12-30 22:59:40,748 [INFO] subtitle-system: [0.53s] Are you okay, Harumi?
+2025-12-30 22:59:40,748 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 22:59:40,760 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 22:59:41,118 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.0 (-1.102551 < -1.000000)
+2025-12-30 22:59:41,409 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.2 (-1.150818 < -1.000000)
+2025-12-30 22:59:42,252 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.7658
+2025-12-30 22:59:43,755 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.6087
+2025-12-30 22:59:44,415 [DEBUG] faster_whisper: Compression ratio threshold is not met with temperature 0.4 (17.153846 > 2.400000)
+2025-12-30 22:59:44,868 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.6 (-1.262455 < -1.000000)
+2025-12-30 22:59:45,239 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.9043
+2025-12-30 22:59:45,413 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.8 (-1.424437 < -1.000000)
+2025-12-30 22:59:45,860 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 1.0 (-1.665522 < -1.000000)
+2025-12-30 22:59:45,860 [DEBUG] faster_whisper: Reset prompt. prompt_reset_on_temperature threshold is met 1.000000 > 0.500000
+2025-12-30 22:59:45,864 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'I can't believe it!'
+2025-12-30 22:59:45,864 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (5.12s, RTF: 3.41)
+2025-12-30 22:59:45,864 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 22:59:45,867 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 22:59:46,271 [DEBUG] app.asr.whisper_engine: faster-whisper: 'What are you doing with your hands?' (0.41s, RTF: 0.27)
+2025-12-30 22:59:46,271 [DEBUG] app.web.server: Sent subtitle: What are you doing with your hands?...
+2025-12-30 22:59:46,271 [INFO] subtitle-system: [0.41s] What are you doing with your hands?
+2025-12-30 22:59:46,271 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 22:59:46,276 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 22:59:46,729 [DEBUG] app.asr.whisper_engine: faster-whisper: 'What are you doing?' (0.46s, RTF: 0.31)
+2025-12-30 22:59:46,730 [DEBUG] app.web.server: Sent subtitle: What are you doing?...
+2025-12-30 22:59:46,730 [INFO] subtitle-system: [0.46s] What are you doing?
+2025-12-30 22:59:46,730 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 22:59:46,732 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 22:59:46,787 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.7611
+2025-12-30 22:59:47,148 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.0 (-1.019018 < -1.000000)
+2025-12-30 22:59:47,525 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.2 (-1.087231 < -1.000000)
+2025-12-30 22:59:47,892 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.4 (-1.019018 < -1.000000)
+2025-12-30 22:59:48,256 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.7711
+2025-12-30 22:59:49,750 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8729
+2025-12-30 22:59:50,993 [DEBUG] faster_whisper: Compression ratio threshold is not met with temperature 0.6 (31.928571 > 2.400000)
+2025-12-30 22:59:51,083 [INFO] werkzeug: 127.0.0.1 - - [30/Dec/2025 22:59:51] "GET /health HTTP/1.1" 200 -
+2025-12-30 22:59:51,262 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8265
+2025-12-30 22:59:51,382 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.8 (-1.161570 < -1.000000)
+2025-12-30 22:59:51,733 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 1.0 (-1.667166 < -1.000000)
+2025-12-30 22:59:51,733 [DEBUG] faster_whisper: Reset prompt. prompt_reset_on_temperature threshold is met 1.000000 > 0.500000
+2025-12-30 22:59:51,737 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'Thank you for watching'
+2025-12-30 22:59:51,737 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (5.01s, RTF: 3.34)
+2025-12-30 22:59:51,737 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 22:59:51,739 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 22:59:52,197 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.0 (-1.099007 < -1.000000)
+2025-12-30 22:59:52,642 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.2 (-1.200364 < -1.000000)
+2025-12-30 22:59:52,765 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.7300
+2025-12-30 22:59:53,069 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.4 (-1.200364 < -1.000000)
+2025-12-30 22:59:53,495 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.6 (-1.298979 < -1.000000)
+2025-12-30 22:59:53,920 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.8 (-1.064536 < -1.000000)
+2025-12-30 22:59:54,239 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.9069
+2025-12-30 22:59:54,239 [WARNING] app.audio.capture: Audio queue full, dropping chunk
+2025-12-30 22:59:54,458 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 1.0 (-2.049699 < -1.000000)
+2025-12-30 22:59:54,459 [DEBUG] faster_whisper: Reset prompt. prompt_reset_on_temperature threshold is met 1.000000 > 0.500000
+2025-12-30 22:59:54,462 [DEBUG] app.asr.whisper_engine: faster-whisper: 'This is fun, isn't it?' (2.72s, RTF: 1.82)
+2025-12-30 22:59:54,462 [DEBUG] app.web.server: Sent subtitle: This is fun, isn't it?...
+2025-12-30 22:59:54,462 [INFO] subtitle-system: [2.73s] This is fun, isn't it?
+2025-12-30 22:59:54,462 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 22:59:54,470 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 22:59:54,843 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'Huh?'
+2025-12-30 22:59:54,843 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.38s, RTF: 0.25)
+2025-12-30 22:59:54,843 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 22:59:54,845 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 22:59:55,312 [DEBUG] app.asr.whisper_engine: faster-whisper: 'What the hell is this?' (0.47s, RTF: 0.31)
+2025-12-30 22:59:55,312 [DEBUG] app.web.server: Sent subtitle: What the hell is this?...
+2025-12-30 22:59:55,312 [INFO] subtitle-system: [0.47s] What the hell is this?
+2025-12-30 22:59:55,312 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 22:59:55,318 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 22:59:55,705 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'I'm sorry!'
+2025-12-30 22:59:55,705 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.39s, RTF: 0.26)
+2025-12-30 22:59:55,705 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 22:59:55,707 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 22:59:55,772 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.6208
+2025-12-30 22:59:56,054 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'I can't believe it!'
+2025-12-30 22:59:56,054 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.35s, RTF: 0.23)
+2025-12-30 22:59:56,055 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 22:59:56,061 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 22:59:56,399 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.0 (-1.013519 < -1.000000)
+2025-12-30 22:59:56,749 [DEBUG] app.asr.whisper_engine: faster-whisper: 'Ah!' (0.69s, RTF: 0.46)
+2025-12-30 22:59:56,750 [DEBUG] app.web.server: Sent subtitle: Ah!...
+2025-12-30 22:59:56,750 [INFO] subtitle-system: [0.70s] Ah!
+2025-12-30 22:59:56,750 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 22:59:56,753 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 22:59:57,108 [DEBUG] app.asr.whisper_engine: faster-whisper: 'Go!' (0.36s, RTF: 0.24)
+2025-12-30 22:59:57,108 [DEBUG] app.web.server: Sent subtitle: Go!...
+2025-12-30 22:59:57,108 [INFO] subtitle-system: [0.36s] Go!
+2025-12-30 22:59:57,245 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.5068
+2025-12-30 22:59:57,246 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 22:59:57,247 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 22:59:57,581 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'Thank you for watching.'
+2025-12-30 22:59:57,581 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.34s, RTF: 0.22)
+2025-12-30 22:59:58,739 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.5680
+2025-12-30 22:59:58,739 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 22:59:58,741 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 22:59:59,142 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'Thank you for watching!'
+2025-12-30 22:59:59,142 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.40s, RTF: 0.27)
+2025-12-30 23:00:00,243 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.5025
+2025-12-30 23:00:00,243 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:00,245 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:00,646 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'Thank you for watching.'
+2025-12-30 23:00:00,647 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.40s, RTF: 0.27)
+2025-12-30 23:00:01,756 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.3911
+2025-12-30 23:00:01,756 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:01,758 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:02,210 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'Thank you for watching!'
+2025-12-30 23:00:02,211 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.45s, RTF: 0.30)
+2025-12-30 23:00:03,239 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.5556
+2025-12-30 23:00:03,239 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:03,241 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:03,548 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'I'm sorry.'
+2025-12-30 23:00:03,548 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.31s, RTF: 0.21)
+2025-12-30 23:00:04,743 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.6986
+2025-12-30 23:00:04,743 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:04,745 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:05,101 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'Thank you for watching!'
+2025-12-30 23:00:05,101 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.36s, RTF: 0.24)
+2025-12-30 23:00:06,256 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.7493
+2025-12-30 23:00:06,257 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:06,258 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:06,752 [DEBUG] app.asr.whisper_engine: faster-whisper: 'I don't know what to do  I don't know what to do' (0.50s, RTF: 0.33)
+2025-12-30 23:00:06,752 [DEBUG] app.web.server: Sent subtitle: I don't know what to do  I don't know what to do...
+2025-12-30 23:00:06,752 [INFO] subtitle-system: [0.50s] I don't know what to do  I don't know what to do
+2025-12-30 23:00:07,730 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.7903
+2025-12-30 23:00:07,730 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:07,732 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:08,120 [DEBUG] app.asr.whisper_engine: faster-whisper: 'I don't know what to do' (0.39s, RTF: 0.26)
+2025-12-30 23:00:08,121 [DEBUG] app.web.server: Sent subtitle: I don't know what to do...
+2025-12-30 23:00:08,121 [INFO] subtitle-system: [0.39s] I don't know what to do
+2025-12-30 23:00:09,253 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8416
+2025-12-30 23:00:09,254 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:09,261 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:09,699 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'Thank you for watching!'
+2025-12-30 23:00:09,700 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.45s, RTF: 0.30)
+2025-12-30 23:00:10,747 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8627
+2025-12-30 23:00:10,747 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:10,749 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:11,168 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.0 (-1.004060 < -1.000000)
+2025-12-30 23:00:11,168 [DEBUG] faster_whisper: No speech threshold is met (0.797596 > 0.650000)
+2025-12-30 23:00:11,173 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.43s, RTF: 0.28)
+2025-12-30 23:00:12,261 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.9034
+2025-12-30 23:00:12,261 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:12,263 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:12,614 [DEBUG] app.asr.whisper_engine: faster-whisper: 'I lost my way' (0.35s, RTF: 0.24)
+2025-12-30 23:00:12,615 [DEBUG] app.web.server: Sent subtitle: I lost my way...
+2025-12-30 23:00:12,615 [INFO] subtitle-system: [0.35s] I lost my way
+2025-12-30 23:00:13,734 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8114
+2025-12-30 23:00:13,734 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:13,736 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:14,149 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'I'm sorry.'
+2025-12-30 23:00:14,150 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.42s, RTF: 0.28)
+2025-12-30 23:00:15,247 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8709
+2025-12-30 23:00:15,248 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:15,250 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:15,648 [DEBUG] app.asr.whisper_engine: faster-whisper: 'I don't have money or a job.' (0.40s, RTF: 0.27)
+2025-12-30 23:00:15,648 [DEBUG] app.web.server: Sent subtitle: I don't have money or a job....
+2025-12-30 23:00:15,648 [INFO] subtitle-system: [0.40s] I don't have money or a job.
+2025-12-30 23:00:16,751 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8922
+2025-12-30 23:00:16,751 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:16,766 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:17,183 [DEBUG] app.asr.whisper_engine: faster-whisper: 'What do you think you're doing?' (0.43s, RTF: 0.29)
+2025-12-30 23:00:17,183 [DEBUG] app.web.server: Sent subtitle: What do you think you're doing?...
+2025-12-30 23:00:17,184 [INFO] subtitle-system: [0.43s] What do you think you're doing?
+2025-12-30 23:00:18,234 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.9155
+2025-12-30 23:00:18,234 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:18,239 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:18,643 [DEBUG] app.asr.whisper_engine: faster-whisper: 'I don't even know what to do.' (0.41s, RTF: 0.27)
+2025-12-30 23:00:18,643 [DEBUG] app.web.server: Sent subtitle: I don't even know what to do....
+2025-12-30 23:00:18,643 [INFO] subtitle-system: [0.41s] I don't even know what to do.
+2025-12-30 23:00:19,768 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8774
+2025-12-30 23:00:19,768 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:19,771 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:20,108 [DEBUG] app.asr.whisper_engine: faster-whisper: 'I don't think so.' (0.34s, RTF: 0.23)
+2025-12-30 23:00:20,109 [DEBUG] app.web.server: Sent subtitle: I don't think so....
+2025-12-30 23:00:20,109 [INFO] subtitle-system: [0.34s] I don't think so.
+2025-12-30 23:00:21,161 [INFO] werkzeug: 127.0.0.1 - - [30/Dec/2025 23:00:21] "GET /health HTTP/1.1" 200 -
+2025-12-30 23:00:21,251 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8264
+2025-12-30 23:00:21,251 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:21,253 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:21,686 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'Thank you for watching!'
+2025-12-30 23:00:21,687 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.44s, RTF: 0.29)
+2025-12-30 23:00:22,754 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8352
+2025-12-30 23:00:22,754 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:22,775 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:23,124 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'Thank you for watching!'
+2025-12-30 23:00:23,124 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.37s, RTF: 0.25)
+2025-12-30 23:00:24,237 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8771
+2025-12-30 23:00:24,238 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:24,240 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:24,642 [DEBUG] app.asr.whisper_engine: faster-whisper: 'This is the limited edition that came in today.' (0.40s, RTF: 0.27)
+2025-12-30 23:00:24,642 [DEBUG] app.web.server: Sent subtitle: This is the limited edition that came in today....
+2025-12-30 23:00:24,642 [INFO] subtitle-system: [0.40s] This is the limited edition that came in today.
+2025-12-30 23:00:25,741 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8323
+2025-12-30 23:00:25,741 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:25,743 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:26,180 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'Thank you!'
+2025-12-30 23:00:26,180 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.44s, RTF: 0.29)
+2025-12-30 23:00:27,245 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8788
+2025-12-30 23:00:27,245 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:27,247 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:27,675 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'Thank you very much.'
+2025-12-30 23:00:27,675 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.43s, RTF: 0.29)
+2025-12-30 23:00:28,748 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8985
+2025-12-30 23:00:28,748 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:28,750 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:29,207 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.0 (-1.089225 < -1.000000)
+2025-12-30 23:00:29,207 [DEBUG] faster_whisper: No speech threshold is met (0.690273 > 0.650000)
+2025-12-30 23:00:29,210 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.46s, RTF: 0.31)
+2025-12-30 23:00:30,252 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.9124
+2025-12-30 23:00:30,252 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:30,254 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:30,710 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.0 (-1.269212 < -1.000000)
+2025-12-30 23:00:31,103 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.2 (-1.239669 < -1.000000)
+2025-12-30 23:00:31,566 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.4 (-1.241788 < -1.000000)
+2025-12-30 23:00:31,755 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.9140
+2025-12-30 23:00:32,057 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.6 (-1.003183 < -1.000000)
+2025-12-30 23:00:32,533 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.8 (-1.595819 < -1.000000)
+2025-12-30 23:00:33,084 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 1.0 (-1.894245 < -1.000000)
+2025-12-30 23:00:33,084 [DEBUG] faster_whisper: Reset prompt. prompt_reset_on_temperature threshold is met 1.000000 > 0.500000
+2025-12-30 23:00:33,088 [DEBUG] app.asr.whisper_engine: faster-whisper: 'Are you waiting for me?' (2.84s, RTF: 1.89)
+2025-12-30 23:00:33,088 [DEBUG] app.web.server: Sent subtitle: Are you waiting for me?...
+2025-12-30 23:00:33,088 [INFO] subtitle-system: [2.84s] Are you waiting for me?
+2025-12-30 23:00:33,088 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:33,091 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:33,249 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.9079
+2025-12-30 23:00:33,492 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'I'm sorry.'
+2025-12-30 23:00:33,492 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.40s, RTF: 0.27)
+2025-12-30 23:00:33,493 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:33,495 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:33,939 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'Thank you for watching.'
+2025-12-30 23:00:33,939 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.45s, RTF: 0.30)
+2025-12-30 23:00:34,752 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.9199
+2025-12-30 23:00:34,752 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:34,755 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:35,125 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.0 (-1.009693 < -1.000000)
+2025-12-30 23:00:35,532 [DEBUG] app.asr.whisper_engine: faster-whisper: 'I'm waiting for you.' (0.78s, RTF: 0.52)
+2025-12-30 23:00:35,532 [DEBUG] app.web.server: Sent subtitle: I'm waiting for you....
+2025-12-30 23:00:35,532 [INFO] subtitle-system: [0.78s] I'm waiting for you.
+2025-12-30 23:00:36,256 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.9101
+2025-12-30 23:00:36,256 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:36,258 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:36,623 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'Thank you for watching until the end.'
+2025-12-30 23:00:36,623 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.37s, RTF: 0.24)
+2025-12-30 23:00:37,749 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.9043
+2025-12-30 23:00:37,749 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:37,751 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:38,115 [DEBUG] app.asr.whisper_engine: faster-whisper: 'But I'm lucky' (0.37s, RTF: 0.24)
+2025-12-30 23:00:38,116 [DEBUG] app.web.server: Sent subtitle: But I'm lucky...
+2025-12-30 23:00:38,116 [INFO] subtitle-system: [0.37s] But I'm lucky
+2025-12-30 23:00:39,263 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8939
+2025-12-30 23:00:39,263 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:39,265 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:39,588 [DEBUG] app.asr.whisper_engine: faster-whisper: 'Now!' (0.32s, RTF: 0.22)
+2025-12-30 23:00:39,588 [DEBUG] app.web.server: Sent subtitle: Now!...
+2025-12-30 23:00:39,588 [INFO] subtitle-system: [0.32s] Now!
+2025-12-30 23:00:40,756 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8898
+2025-12-30 23:00:40,756 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:40,758 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:41,127 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'Thank you for watching until the end.'
+2025-12-30 23:00:41,127 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.37s, RTF: 0.25)
+2025-12-30 23:00:42,250 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.9020
+2025-12-30 23:00:42,250 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:42,252 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:42,646 [DEBUG] app.asr.whisper_engine: faster-whisper: 'It's time for you to get a job.' (0.40s, RTF: 0.26)
+2025-12-30 23:00:42,647 [DEBUG] app.web.server: Sent subtitle: It's time for you to get a job....
+2025-12-30 23:00:42,647 [INFO] subtitle-system: [0.40s] It's time for you to get a job.
+2025-12-30 23:00:43,753 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.9108
+2025-12-30 23:00:43,753 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:43,756 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:44,359 [DEBUG] app.asr.whisper_engine: Filtered repetitive hallucination: 'I'm going to a big company car dealership.  I'm going to a big company car dealership.'
+2025-12-30 23:00:44,359 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.61s, RTF: 0.40)
+2025-12-30 23:00:45,247 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8735
+2025-12-30 23:00:45,247 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:45,252 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:45,681 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'Let's go!'
+2025-12-30 23:00:45,681 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.43s, RTF: 0.29)
+2025-12-30 23:00:46,730 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8615
+2025-12-30 23:00:46,730 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:46,732 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:47,224 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'Thank you for watching!'
+2025-12-30 23:00:47,224 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.49s, RTF: 0.33)
+2025-12-30 23:00:48,233 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8942
+2025-12-30 23:00:48,233 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:48,235 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:48,614 [DEBUG] app.asr.whisper_engine: faster-whisper: 'Good morning.' (0.38s, RTF: 0.25)
+2025-12-30 23:00:48,614 [DEBUG] app.web.server: Sent subtitle: Good morning....
+2025-12-30 23:00:48,615 [INFO] subtitle-system: [0.38s] Good morning.
+2025-12-30 23:00:49,767 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.9262
+2025-12-30 23:00:49,767 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:49,769 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:50,208 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'Let's go!'
+2025-12-30 23:00:50,208 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.44s, RTF: 0.29)
+2025-12-30 23:00:51,238 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8956
+2025-12-30 23:00:51,238 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:51,240 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:51,253 [INFO] werkzeug: 127.0.0.1 - - [30/Dec/2025 23:00:51] "GET /health HTTP/1.1" 200 -
+2025-12-30 23:00:51,796 [DEBUG] app.asr.whisper_engine: Filtered repetitive hallucination: 'Ah, I forgot to wear my jacket.  Ah, I forgot to wear my jacket.'
+2025-12-30 23:00:51,796 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.56s, RTF: 0.37)
+2025-12-30 23:00:52,741 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.9013
+2025-12-30 23:00:52,742 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:52,744 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:53,130 [DEBUG] app.asr.whisper_engine: faster-whisper: 'I wonder if it's too late.' (0.39s, RTF: 0.26)
+2025-12-30 23:00:53,130 [DEBUG] app.web.server: Sent subtitle: I wonder if it's too late....
+2025-12-30 23:00:53,131 [INFO] subtitle-system: [0.39s] I wonder if it's too late.
+2025-12-30 23:00:54,245 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8911
+2025-12-30 23:00:54,245 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:54,247 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:54,611 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.0 (-1.042666 < -1.000000)
+2025-12-30 23:00:55,033 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.2 (-1.042666 < -1.000000)
+2025-12-30 23:00:55,460 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.4 (-1.042666 < -1.000000)
+2025-12-30 23:00:55,728 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8882
+2025-12-30 23:00:55,922 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.6 (-1.042666 < -1.000000)
+2025-12-30 23:00:56,417 [DEBUG] faster_whisper: Reset prompt. prompt_reset_on_temperature threshold is met 0.800000 > 0.500000
+2025-12-30 23:00:56,418 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'Thank you for watching until the end.'
+2025-12-30 23:00:56,418 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (2.17s, RTF: 1.45)
+2025-12-30 23:00:56,418 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:56,421 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:56,800 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.0 (-1.014706 < -1.000000)
+2025-12-30 23:00:56,800 [DEBUG] faster_whisper: No speech threshold is met (0.715729 > 0.650000)
+2025-12-30 23:00:56,802 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.38s, RTF: 0.26)
+2025-12-30 23:00:57,252 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8899
+2025-12-30 23:00:57,252 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:57,259 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:57,681 [DEBUG] app.asr.whisper_engine: faster-whisper: 'If you can do it, it's okay.' (0.43s, RTF: 0.29)
+2025-12-30 23:00:57,681 [DEBUG] app.web.server: Sent subtitle: If you can do it, it's okay....
+2025-12-30 23:00:57,682 [INFO] subtitle-system: [0.43s] If you can do it, it's okay.
+2025-12-30 23:00:58,746 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8970
+2025-12-30 23:00:58,746 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:00:58,748 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:00:59,066 [DEBUG] app.asr.whisper_engine: faster-whisper: 'See you later.' (0.32s, RTF: 0.21)
+2025-12-30 23:00:59,066 [DEBUG] app.web.server: Sent subtitle: See you later....
+2025-12-30 23:00:59,066 [INFO] subtitle-system: [0.32s] See you later.
+2025-12-30 23:01:00,249 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8851
+2025-12-30 23:01:00,249 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:01:00,252 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:01:00,606 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'I'm sorry.'
+2025-12-30 23:01:00,606 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.36s, RTF: 0.24)
+2025-12-30 23:01:01,732 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8955
+2025-12-30 23:01:01,733 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:01:01,736 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:01:02,253 [DEBUG] app.asr.whisper_engine: faster-whisper: 'Have a good night!' (0.52s, RTF: 0.35)
+2025-12-30 23:01:02,253 [DEBUG] app.web.server: Sent subtitle: Have a good night!...
+2025-12-30 23:01:02,253 [INFO] subtitle-system: [0.52s] Have a good night!
+2025-12-30 23:01:03,236 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8901
+2025-12-30 23:01:03,236 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:01:03,242 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:01:03,630 [DEBUG] app.asr.whisper_engine: faster-whisper: '5.' (0.39s, RTF: 0.26)
+2025-12-30 23:01:03,630 [DEBUG] app.web.server: Sent subtitle: 5....
+2025-12-30 23:01:03,630 [INFO] subtitle-system: [0.39s] 5.
+2025-12-30 23:01:04,739 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8988
+2025-12-30 23:01:04,740 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:01:04,742 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:01:05,188 [DEBUG] app.asr.whisper_engine: faster-whisper: 'I'm going to be careful with the time limit, but' (0.45s, RTF: 0.30)
+2025-12-30 23:01:05,188 [DEBUG] app.web.server: Sent subtitle: I'm going to be careful with the time limit, but...
+2025-12-30 23:01:05,188 [INFO] subtitle-system: [0.45s] I'm going to be careful with the time limit, but
+2025-12-30 23:01:06,243 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8549
+2025-12-30 23:01:06,243 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:01:06,245 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:01:06,598 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.0 (-1.175573 < -1.000000)
+2025-12-30 23:01:06,598 [DEBUG] faster_whisper: No speech threshold is met (0.773213 > 0.650000)
+2025-12-30 23:01:06,599 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.36s, RTF: 0.24)
+2025-12-30 23:01:07,746 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8862
+2025-12-30 23:01:07,747 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:01:07,749 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:01:08,118 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'Thank you for watching until the end.'
+2025-12-30 23:01:08,118 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.37s, RTF: 0.25)
+2025-12-30 23:01:09,250 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8680
+2025-12-30 23:01:09,250 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:01:09,252 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:01:09,598 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.0 (-1.195904 < -1.000000)
+2025-12-30 23:01:09,598 [DEBUG] faster_whisper: No speech threshold is met (0.771914 > 0.650000)
+2025-12-30 23:01:09,600 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.35s, RTF: 0.23)
+2025-12-30 23:01:10,754 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8989
+2025-12-30 23:01:10,754 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:01:10,756 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:01:11,205 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'Thank you for watching.'
+2025-12-30 23:01:11,205 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.45s, RTF: 0.30)
+2025-12-30 23:01:12,247 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.9024
+2025-12-30 23:01:12,247 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:01:12,249 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:01:12,636 [DEBUG] app.asr.whisper_engine: faster-whisper: 'I have a place to go.' (0.39s, RTF: 0.26)
+2025-12-30 23:01:12,636 [DEBUG] app.web.server: Sent subtitle: I have a place to go....
+2025-12-30 23:01:12,636 [INFO] subtitle-system: [0.39s] I have a place to go.
+2025-12-30 23:01:13,751 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8786
+2025-12-30 23:01:13,751 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:01:13,753 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:01:14,095 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.0 (-1.147358 < -1.000000)
+2025-12-30 23:01:14,096 [DEBUG] faster_whisper: No speech threshold is met (0.728129 > 0.650000)
+2025-12-30 23:01:14,098 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.35s, RTF: 0.23)
+2025-12-30 23:01:15,254 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8575
+2025-12-30 23:01:15,254 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:01:15,259 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:01:15,638 [DEBUG] app.asr.whisper_engine: Filtered hallucination: 'Thank you for watching.'
+2025-12-30 23:01:15,638 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.38s, RTF: 0.26)
+2025-12-30 23:01:16,748 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.9024
+2025-12-30 23:01:16,748 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:01:16,750 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:01:17,114 [DEBUG] app.asr.whisper_engine: faster-whisper: 'I have something to tell you.' (0.37s, RTF: 0.24)
+2025-12-30 23:01:17,114 [DEBUG] app.web.server: Sent subtitle: I have something to tell you....
+2025-12-30 23:01:17,114 [INFO] subtitle-system: [0.37s] I have something to tell you.
+2025-12-30 23:01:18,241 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8399
+2025-12-30 23:01:18,241 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:01:18,243 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:01:18,601 [DEBUG] faster_whisper: Log probability threshold is not met with temperature 0.0 (-1.219230 < -1.000000)
+2025-12-30 23:01:18,601 [DEBUG] faster_whisper: No speech threshold is met (0.730915 > 0.650000)
+2025-12-30 23:01:18,603 [DEBUG] app.asr.whisper_engine: faster-whisper: '' (0.36s, RTF: 0.24)
+2025-12-30 23:01:19,744 [DEBUG] app.audio.capture: Delivering audio chunk: 24000 samples, RMS: 0.8469
+2025-12-30 23:01:19,745 [INFO] faster_whisper: Processing audio with duration 00:01.500
+2025-12-30 23:01:19,747 [DEBUG] faster_whisper: Processing segment at 00:00.000
+2025-12-30 23:01:20,302 [DEBUG] app.asr.whisper_engine: faster-whisper: 'I'm sorry, Kensuke.' (0.56s, RTF: 0.37)
+2025-12-30 23:01:20,302 [DEBUG] app.web.server: Sent subtitle: I'm sorry, Kensuke....
+2025-12-30 23:01:20,303 [INFO] subtitle-system: [0.56s] I'm sorry, Kensuke.

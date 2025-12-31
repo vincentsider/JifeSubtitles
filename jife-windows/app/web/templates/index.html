@@ -178,6 +178,14 @@
 <body class="size-medium">
     <div id="header">
         <span class="status-dot" id="statusDot"></span>
+        <select id="languageSelect" onchange="switchLanguage(this.value)" title="Target Language">
+            <option value="en" selected>🇬🇧 EN</option>
+            <option value="fr">🇫🇷 FR</option>
+            <option value="es">🇪🇸 ES</option>
+            <option value="de">🇩🇪 DE</option>
+            <option value="pt">🇵🇹 PT</option>
+            <option value="it">🇮🇹 IT</option>
+        </select>
         <select id="modelSelect" onchange="switchModel(this.value)" title="Model">
             <option value="">Loading...</option>
         </select>
@@ -259,13 +267,19 @@
                 waitingEl.style.display = 'none';
             }
 
+            // Check if this is interim text
+            const isInterim = data.metadata && data.metadata.is_interim;
+
             // Build subtitle HTML with speaker color
             let html = '';
             if (data.source && showSource) {
                 html += `<div class="source-text">${escapeHtml(data.source)}</div>`;
             }
             const color = data.color || '#ffffff';
-            html += `<div class="subtitle-text" style="color: ${color}">${escapeHtml(data.text)}</div>`;
+
+            // Style interim text differently: italic and slightly faded
+            const interimStyle = isInterim ? 'font-style: italic; opacity: 0.7;' : '';
+            html += `<div class="subtitle-text" style="color: ${color}; ${interimStyle}">${escapeHtml(data.text)}</div>`;
 
             // Update subtitle
             subtitleEl.classList.remove('visible', 'fade-out');
@@ -393,6 +407,35 @@
                 opt.title = m.description;
                 if (m.id === currentModel) opt.selected = true;
                 select.appendChild(opt);
+            });
+        }
+
+        function switchLanguage(lang) {
+            if (!lang) return;
+
+            fetch('/language/switch', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({language: lang})
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    console.log('Language switched to:', lang);
+                    // Show brief confirmation
+                    subtitleEl.innerHTML = `<div class="subtitle-text" style="color:#00ff88">Language: ${lang.toUpperCase()}</div>`;
+                    subtitleEl.classList.add('visible');
+                    setTimeout(() => {
+                        subtitleEl.classList.remove('visible');
+                    }, 1500);
+                } else {
+                    console.error('Language switch failed:', data.message);
+                    alert('Failed to switch language: ' + data.message);
+                }
+            })
+            .catch(err => {
+                console.error('Language switch error:', err);
+                alert('Error switching language');
             });
         }
 

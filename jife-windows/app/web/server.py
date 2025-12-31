@@ -14,7 +14,7 @@ from flask_socketio import SocketIO
 logger = logging.getLogger(__name__)
 
 # Available models for the frontend selector
-# Sorted by recommended order for Jetson Orin Nano (7.4GB RAM)
+# Optimized for Windows PC with NVIDIA GPU (RTX 20xx/30xx/40xx)
 # 'id' format: model_name:compute_type:beam_size for unique identification
 #
 # NOTE: large-v3-turbo is NOT included because it does NOT support translation.
@@ -22,28 +22,36 @@ logger = logging.getLogger(__name__)
 # See: https://github.com/SYSTRAN/faster-whisper/issues/1237
 AVAILABLE_MODELS = [
     {
-        'id': 'large-v3:int8:1',
+        'id': 'large-v3:float16:5',
         'model': 'large-v3',
-        'name': 'Large-v3 INT8 (Best)',
-        'description': 'Best accuracy for Japanese, supports translation',
-        'compute_type': 'int8',
-        'beam_size': 1,
+        'name': 'Large-v3 FP16 (Best Quality)',
+        'description': 'Highest accuracy, best for Japanese→English translation. Uses float16 for optimal GPU performance.',
+        'compute_type': 'float16',
+        'beam_size': 5,
     },
     {
-        'id': 'medium:int8:3',
+        'id': 'large-v3:int8_float16:5',
+        'model': 'large-v3',
+        'name': 'Large-v3 INT8 (Faster)',
+        'description': 'Best accuracy with 50% less VRAM, slightly faster than FP16',
+        'compute_type': 'int8_float16',
+        'beam_size': 5,
+    },
+    {
+        'id': 'medium:float16:5',
         'model': 'medium',
-        'name': 'Medium INT8',
-        'description': 'Good balance of speed/accuracy',
-        'compute_type': 'int8',
-        'beam_size': 3,
+        'name': 'Medium FP16 (Balanced)',
+        'description': 'Good balance of speed and accuracy, faster than large-v3',
+        'compute_type': 'float16',
+        'beam_size': 5,
     },
     {
-        'id': 'small:int8:3',
+        'id': 'small:float16:5',
         'model': 'small',
-        'name': 'Small (Fastest)',
-        'description': 'Fastest, lower accuracy',
-        'compute_type': 'int8',
-        'beam_size': 3,
+        'name': 'Small FP16 (Fast)',
+        'description': 'Fastest option with acceptable quality for real-time use',
+        'compute_type': 'float16',
+        'beam_size': 5,
     },
 ]
 
@@ -94,30 +102,13 @@ class SubtitleServer:
         self.last_subtitle_time = None
         self.speaker_colors = ['#ffffff', '#00ffff', '#ffff00', '#ff88ff']  # white, cyan, yellow, pink
 
-        # Hallucination filter - common Whisper hallucinations on silence/noise
-        self.hallucination_phrases = [
-            'thank you for watching',
-            'thank you for your viewing',
-            'thanks for watching',
-            'thank you very much',
-            'please subscribe',
-            'like and subscribe',
-            'see you next time',
-            'see you in the next video',
-            'see you in the next',
-            'bye bye',
-            'goodbye',
-            'the end',
-            'to be continued',
-            'subtitles by',
-            'captions by',
-            'translated by',
-        ]
-
         # Model switching support
         self.current_model: str = ''
         self.model_switching: bool = False
         self.model_switch_callback: Optional[Callable] = None
+
+        # Language support
+        self.current_target_language: str = 'en'  # Default to English
 
         # Register routes and events
         self._register_routes()
@@ -261,6 +252,34 @@ class SubtitleServer:
             else:
                 return jsonify({'error': 'Model switching not configured'}), 500
 
+        @self.app.route('/language/switch', methods=['POST'])
+        def switch_language():
+            """Switch target language"""
+            data = request.get_json() or {}
+            language = data.get('language')
+
+            if not language:
+                return jsonify({'success': False, 'message': 'No language specified'}), 400
+
+            # Validate language code
+            valid_languages = ['en', 'fr', 'es', 'de', 'pt', 'it', 'ru', 'zh', 'ja', 'ko']
+            if language not in valid_languages:
+                return jsonify({'success': False, 'message': f'Unsupported language: {language}'}), 400
+
+            # Update target language in config
+            try:
+                from app.config import get_config
+                config = get_config()
+                config.WHISPER_TARGET_LANGUAGE = language
+                self.current_target_language = language
+
+                logger.info(f"Target language switched to: {language}")
+                return jsonify({'success': True, 'language': language})
+
+            except Exception as e:
+                logger.error(f"Language switch error: {e}")
+                return jsonify({'success': False, 'message': str(e)}), 500
+
     def set_model_switch_callback(self, callback: Callable[[str, str], bool]):
         """Set callback function for model switching"""
         self.model_switch_callback = callback
@@ -286,14 +305,6 @@ class SubtitleServer:
             self.stats['clients_connected'] = max(0, self.stats['clients_connected'] - 1)
             logger.info(f"Client disconnected. Total: {self.stats['clients_connected']}")
 
-    def _is_hallucination(self, text: str) -> bool:
-        """Check if text is a common Whisper hallucination"""
-        text_lower = text.lower().strip()
-        for phrase in self.hallucination_phrases:
-            if phrase in text_lower:
-                return True
-        return False
-
     def send_subtitle(
         self,
         text: str,
@@ -318,10 +329,7 @@ class SubtitleServer:
             logger.debug(f"Skipping subtitle (paused): {text[:30]}...")
             return
 
-        # Filter out hallucinations
-        if self._is_hallucination(text):
-            logger.debug(f"Filtered hallucination: {text}")
-            return
+        # Hallucination filtering is now done in whisper_engine.py
 
         # Speaker detection: if gap > 2 seconds, likely new speaker
         now = datetime.now()

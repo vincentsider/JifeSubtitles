@@ -23,7 +23,7 @@ import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app.config import get_config
-from app.audio import AudioCapture
+from app.audio import AudioCapture, VADProcessor
 from app.asr import create_engine
 from app.web import create_server
 
@@ -32,6 +32,10 @@ shutdown_event = threading.Event()
 config = get_config()
 whisper_engine = None
 engine_lock = threading.Lock()
+
+# Simple duplicate detection
+last_output_text = ""  # For detecting consecutive identical outputs
+last_output_lock = threading.Lock()
 
 # Configure logging
 logging.basicConfig(
@@ -63,88 +67,70 @@ def get_local_ip():
         return 'localhost'
 
 
+# Removed old buffering/deduplication functions - not needed for fixed chunk mode
+
+
 def processing_loop(
     audio_queue: queue.Queue,
     web_server,
 ):
     """
-    Main processing loop.
-    Takes audio chunks from queue, transcribes/translates, sends to web clients.
-    Uses global whisper_engine with lock for thread-safe model switching.
+    Main processing loop - SIMPLIFIED for Option A (fixed chunks).
+    - Processes fixed-size chunks (2.5s, no overlap)
+    - Simple duplicate detection (skip identical consecutive outputs)
+    - Immediate output (no buffering)
+    - Deterministic output (temperature=0)
     """
-    global whisper_engine
-    logger.info("Processing loop started")
-
-    # Track processing times to estimate latency
-    last_chunk_time = time.time()
+    global whisper_engine, last_output_text
+    logger.info(f"Processing loop started (MODE: {config.PROCESSING_MODE}, CHUNK: {config.CHUNK_DURATION_SEC}s)")
 
     while not shutdown_event.is_set():
         try:
-            # AGGRESSIVE latency management:
-            # If queue has more than 1 chunk, we're falling behind - discard all but newest
-            queue_size = audio_queue.qsize()
-            if queue_size > 1:
-                discarded = 0
-                # Keep only the newest chunk
-                newest_chunk = None
-                while not audio_queue.empty():
-                    try:
-                        newest_chunk = audio_queue.get_nowait()
-                        discarded += 1
-                    except queue.Empty:
-                        break
-                if discarded > 1:
-                    logger.warning(f"Discarded {discarded - 1} old chunks to stay real-time")
-                # Put the newest back if we have it
-                if newest_chunk is not None:
-                    audio_queue.put(newest_chunk)
+            # Get next audio chunk (blocking)
+            try:
+                audio_chunk = audio_queue.get(timeout=1.0)
+            except queue.Empty:
+                continue
 
-            # Get audio chunk from queue
-            audio_chunk = audio_queue.get(timeout=1.0)
-            chunk_receive_time = time.time()
-
-            # Track time since last chunk for latency estimation
-            time_since_last = chunk_receive_time - last_chunk_time
-            last_chunk_time = chunk_receive_time
-
-            start_time = time.time()
-
-            # Transcribe/translate (with lock for thread-safe model access)
+            # Process with engine lock
             with engine_lock:
                 if whisper_engine is None:
+                    time.sleep(0.1)
                     continue
+
+                start_time = time.time()
+
+                # Transcribe this chunk
                 text, metadata = whisper_engine.transcribe(
                     audio_chunk,
                     task=config.WHISPER_TASK,
                     language=config.WHISPER_LANGUAGE,
+                    target_language=config.WHISPER_TARGET_LANGUAGE,
                 )
 
-            elapsed = time.time() - start_time
+                elapsed = time.time() - start_time
 
-            # Skip empty results
-            if not text or len(text.strip()) < 2:
-                continue
+                # Skip empty/hallucination results (already filtered in engine)
+                if not text or len(text.strip()) < 2:
+                    continue
 
-            # For translate task, text is already English
-            # For transcribe task, source_text would be Japanese
-            source_text = ''
-            if config.WHISPER_TASK == 'transcribe':
-                source_text = text
-                # Would need separate translation here
-                # For now, we're using translate task so this isn't needed
+                # Simple duplicate detection: skip if identical to last output
+                with last_output_lock:
+                    if text == last_output_text:
+                        logger.debug(f"Skipping duplicate: '{text[:40]}...'")
+                        continue
+                    last_output_text = text
 
-            # Send to web clients
-            web_server.send_subtitle(
-                text=text,
-                source_text=source_text,
-                latency_sec=elapsed,
-                metadata=metadata,
-            )
+                # Output immediately
+                web_server.send_subtitle(
+                    text=text,
+                    source_text='',
+                    latency_sec=elapsed,
+                    metadata=metadata,
+                )
 
-            logger.info(f"[{elapsed:.2f}s] {text[:80]}{'...' if len(text) > 80 else ''}")
+                logger.info(f"[{elapsed:.2f}s] {text[:80]}{'...' if len(text) > 80 else ''}")
 
-        except queue.Empty:
-            continue
         except Exception as e:
             logger.error(f"Processing error: {e}", exc_info=True)
             time.sleep(0.5)
@@ -270,7 +256,10 @@ def main():
         logger.info("Whisper model loaded successfully")
 
         # Set current model in web server and register switch callback
-        web_server.set_current_model(config.WHISPER_MODEL)
+        # Build model ID in format: model_name:compute_type:beam_size
+        compute_type = config.WHISPER_COMPUTE_TYPE or 'float16'
+        model_id = f"{config.WHISPER_MODEL}:{compute_type}:{config.WHISPER_BEAM_SIZE}"
+        web_server.set_current_model(model_id)
         web_server.set_model_switch_callback(switch_model)
 
     except Exception as e:
@@ -278,15 +267,39 @@ def main():
         logger.error("Make sure you're running inside the Docker container with GPU access")
         sys.exit(1)
 
-    # 3. Create audio capture
-    logger.info("Setting up audio capture...")
-    audio_capture = AudioCapture(
-        device=config.AUDIO_DEVICE,
-        sample_rate=config.SAMPLE_RATE,
-        channels=config.CHANNELS,
-        chunk_duration=config.CHUNK_DURATION_SEC,
-        output_queue=audio_queue,
-    )
+    # 3. Create audio capture (mode-dependent)
+    logger.info(f"Setting up audio capture (mode: {config.PROCESSING_MODE})...")
+
+    if config.PROCESSING_MODE == 'vad':
+        # VAD mode: raw audio capture + VAD processor
+        vad_processor = VADProcessor(
+            sample_rate=config.SAMPLE_RATE,
+            min_chunk_size=config.VAD_MIN_CHUNK_SIZE,
+            max_chunk_size=config.VAD_MAX_CHUNK_SIZE,
+            min_silence_duration_ms=config.MIN_SILENCE_DURATION_MS,
+            speech_pad_ms=config.PRE_ROLL_MS,
+            output_queue=audio_queue,
+        )
+
+        # Raw audio capture feeds into VAD processor
+        audio_capture = AudioCapture(
+            device=config.AUDIO_DEVICE,
+            sample_rate=config.SAMPLE_RATE,
+            channels=config.CHANNELS,
+            chunk_duration=0.5,  # Small chunks for VAD processing
+            chunk_overlap=0.0,
+            callback=vad_processor.process_audio,  # Feed to VAD
+        )
+    else:
+        # Fixed mode: direct chunking
+        audio_capture = AudioCapture(
+            device=config.AUDIO_DEVICE,
+            sample_rate=config.SAMPLE_RATE,
+            channels=config.CHANNELS,
+            chunk_duration=config.CHUNK_DURATION_SEC,
+            chunk_overlap=config.CHUNK_OVERLAP_SEC,
+            output_queue=audio_queue,
+        )
 
     # 4. Start processing thread
     processing_thread = threading.Thread(

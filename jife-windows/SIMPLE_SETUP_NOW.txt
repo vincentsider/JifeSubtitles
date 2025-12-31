@@ -1,0 +1,58 @@
+================================================================================
+JIFE - DO THIS NOW (After Reboot with USB Audio Plugged In)
+================================================================================
+
+OPTION 1: Run the Script (Easiest)
+-----------------------------------
+1. Open File Explorer
+2. Go to: C:\Projects\priority\JifeSubtitles\jife-windows
+3. RIGHT-CLICK on "setup-audio.ps1"
+4. Select "Run with PowerShell"
+5. Click "Yes" when asked for admin permission
+6. Follow the prompts
+7. Done!
+
+OPTION 2: Manual Steps (If script doesn't work)
+------------------------------------------------
+Copy and paste these commands into PowerShell (Run as Administrator):
+
+# Install usbipd
+winget install --id dorssel.usbipd-win --accept-source-agreements
+
+# Close and reopen PowerShell, then:
+
+# List USB devices
+usbipd list
+
+# Find your USB audio device in the list (look for "Audio" or your device name)
+# Note the BUSID (looks like 1-4 or 2-3)
+
+# Bind it (replace <BUSID> with your actual bus ID)
+usbipd bind --busid <BUSID>
+
+# Attach to WSL2
+usbipd attach --wsl --busid <BUSID>
+
+# Check if it worked
+wsl bash -c 'arecord -l'
+
+# You should see your audio card listed!
+
+================================================================================
+YOUR IP ADDRESSES:
+================================================================================
+
+From this PC:        http://localhost:5000
+From phone/iPad:     http://192.168.1.36:5000
+
+================================================================================
+THAT'S IT!
+================================================================================
+
+Once the script finishes (or you complete manual steps):
+1. Open browser
+2. Go to one of the URLs above
+3. Play Japanese content
+4. See subtitles!
+
+Container is already running and healthy!

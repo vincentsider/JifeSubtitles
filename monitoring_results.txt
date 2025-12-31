@@ -1,0 +1,32 @@
+Monitoring Results - 2025-12-31 00:01:50
+
+Total Subtitles: 27
+Avg Latency: 0.72s
+
+[0.32s] Now!
+[0.40s] It's time for you to get a job.
+[0.38s] Good morning.
+[0.39s] I wonder if it's too late.
+[0.43s] If you can do it, it's okay.
+[0.32s] See you later.
+[0.52s] Have a good night!
+[0.39s] 5.
+[0.45s] I'm going to be careful with the time limit, but
+[0.39s] I have a place to go.
+[0.37s] I have something to tell you.
+[0.56s] I'm sorry, Kensuke.
+[0.33s] This is...
+[2.82s] What the hell is wrong with you?
+[0.48s] You can choose whatever you want.
+[0.39s] It's red, isn't it?
+[0.40s] I just bought it.
+[0.40s] I bought a stupid clothes
+[0.38s] I'm not making a fool of myself.
+[2.60s] I don't know what to say
+[0.46s] You are important to me.
+[0.41s] By the way,
+[0.36s] It's all about looks.
+[1.78s] What are you doing?
+[2.96s] I'm not going to let anyone get away with it.
+[0.37s] What the hell are you doing?
+[0.38s] I'll give you 30,000 yen.
