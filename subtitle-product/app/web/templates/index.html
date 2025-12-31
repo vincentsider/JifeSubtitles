@@ -138,14 +138,17 @@
             font-size: 1.2em;
         }
 
-        /* Footer stats - minimal */
+        /* Footer stats - minimal but visible */
         #footer {
             position: fixed;
             bottom: 10px;
             left: 10px;
-            font-size: 10px;
-            color: #333;
-            opacity: 0.5;
+            font-size: 14px;
+            color: #ffffff;
+            opacity: 0.8;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 8px 12px;
+            border-radius: 6px;
         }
 
         /* Hide source text toggle */
@@ -209,7 +212,9 @@
     </div>
 
     <div id="footer">
-        <span id="count">0</span> subtitles | <span id="latency">-</span>ms
+        <span id="count">0</span> subtitles | <span id="latency">-</span>ms |
+        Mode: <span id="mode">fixed</span> |
+        Chunk: <span id="chunkSize">3.0</span>s
     </div>
 
     <script>

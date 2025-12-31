@@ -32,6 +32,8 @@ shutdown_event = threading.Event()
 config = get_config()
 whisper_engine = None
 engine_lock = threading.Lock()
+last_output_text = ''
+last_output_lock = threading.Lock()
 
 # Configure logging
 logging.basicConfig(
@@ -124,6 +126,13 @@ def processing_loop(
             # Skip empty results
             if not text or len(text.strip()) < 2:
                 continue
+
+            # Simple duplicate detection - prevents showing same subtitle twice
+            with last_output_lock:
+                if text == last_output_text:
+                    logger.debug(f"Skipping duplicate: '{text[:40]}...'")
+                    continue
+                last_output_text = text
 
             # For translate task, text is already English
             # For transcribe task, source_text would be Japanese

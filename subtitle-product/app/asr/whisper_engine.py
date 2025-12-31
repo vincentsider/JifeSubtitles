@@ -4,12 +4,90 @@ Supports both whisper_trt (TensorRT optimized) and standard whisper backends
 """
 import logging
 import time
+import re
 from typing import Optional, Dict, Any, Tuple
 from abc import ABC, abstractmethod
 
 import numpy as np
 
 logger = logging.getLogger(__name__)
+
+
+# Hallucination patterns to filter out (case-insensitive)
+# These are common Whisper hallucinations on silence/music/background noise
+HALLUCINATION_PATTERNS = [
+    # Thank you variations
+    r'^thank you[\.!?]*$',
+    r'^thank you for watching[\.!?]*$',
+    r'^thank you for your [\.!?\w\s]*[\.!?]*$',
+    r'^thank you for [\.!?\w\s]*[\.!?]*$',
+    r'^thank you very much[\.!?]*$',
+    r'^thank you so much[\.!?]*$',
+    r'^thanks for watching[\.!?]*$',
+    r'^thanks for [\.!?\w\s]*[\.!?]*$',
+    r'^thanks[\.!?]*$',
+
+    # Generic filler phrases
+    r"^let's go[,\.!? ]*$",
+    r"^what[?!,\. ]*$",
+    r"^i think[\.!?, ]*$",
+    r"^i'm sorry[\.!?, ]*$",
+    r"^sorry[\.!?, ]*$",
+    r"^that's it[\.!?, ]*$",
+    r"^i can't believe it[\.!?, ]*$",
+    r"^i don't believe it[\.!?, ]*$",
+    r'^oh my god[\.!?, ]*$',
+    r'^oh my[\.!?, ]*$',
+    r'^wow[\.!?, ]*$',
+    r'^bye[\.!?, ]*$',
+    r'^see you[\.!?, ]*$',
+    r'^goodbye[\.!?, ]*$',
+    r'^okay[\.!?, ]*$',
+    r'^alright[\.!?, ]*$',
+    r'^yeah[\.!?, ]*$',
+    r'^yes[\.!?, ]*$',
+    r'^no[\.!?, ]*$',
+    r'^uh[\.!?, ]*$',
+    r'^um[\.!?, ]*$',
+    r'^huh[\.!?, ]*$',
+    r'^please subscribe[\.!?, ]*$',
+    r'^subscribe[\.!?, ]*$',
+
+    # Common hallucinations on music/noise
+    r"^i'?m? (going to|gonna) kill you[\.!?, ]*$",
+    r"^i'?m? (going to|gonna) die[\.!?, ]*$",
+    r"^i don'?t know[\.!?, ]*$",
+]
+
+
+def is_hallucination(text: str) -> bool:
+    """
+    Check if text is likely a hallucination (generic filler phrase).
+    Returns True if text should be filtered out.
+    """
+    if not text or len(text.strip()) < 2:
+        return True
+
+    text_lower = text.lower().strip()
+
+    # Check for repetitions (e.g., "phrase, phrase" or "phrase. phrase")
+    delimiters = [',', '.', '!', '?', ';']
+    for delim in delimiters:
+        if delim in text_lower:
+            parts = [p.strip() for p in text_lower.split(delim) if p.strip()]
+            if len(parts) >= 2:
+                for part in parts:
+                    if len(part) >= 5 and parts.count(part) >= 2:
+                        logger.debug(f"Filtered repetitive hallucination: '{text}'")
+                        return True
+
+    # Check against known hallucination patterns
+    for pattern in HALLUCINATION_PATTERNS:
+        if re.match(pattern, text_lower):
+            logger.debug(f"Filtered hallucination: '{text}'")
+            return True
+
+    return False
 
 
 class WhisperEngine(ABC):
@@ -271,10 +349,17 @@ class FasterWhisperEngine(WhisperEngine):
             task=task,
             beam_size=self.beam_size,
             vad_filter=True,
+            temperature=0.0,  # Deterministic output (no randomness)
+            condition_on_previous_text=False,  # Prevents repetition loops with short chunks
+            no_speech_threshold=0.5,  # Balanced (higher = skip more silence)
         )
 
         # Collect text from segments
         text = ' '.join([seg.text for seg in segments]).strip()
+
+        # Filter hallucinations
+        if is_hallucination(text):
+            text = ''  # Return empty string for hallucinations
 
         elapsed = time.time() - start
 
