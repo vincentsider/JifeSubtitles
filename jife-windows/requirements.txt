@@ -4,6 +4,10 @@
 # Core ASR
 faster-whisper>=1.0.0
 
+# Option B: SeamlessM4T v2 (speech-to-text translation)
+transformers>=4.36.0
+sentencepiece>=0.1.99
+
 # Web server
 flask>=3.0.0
 flask-socketio>=5.3.0

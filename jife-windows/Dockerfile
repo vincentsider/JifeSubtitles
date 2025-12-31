@@ -31,14 +31,18 @@ ENV PATH="/opt/venv/bin:$PATH"
 
 # Install Python dependencies
 # Note: We use CUDA 12.x compatible versions
+# PyTorch with CUDA 12.1 support for SeamlessM4T
 RUN pip install --upgrade pip && \
+    pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu121 && \
     pip install \
     faster-whisper>=1.0.0 \
     flask>=3.0.0 \
     flask-socketio>=5.3.0 \
     sounddevice>=0.4.6 \
     scipy>=1.11.0 \
-    numpy>=1.24.0
+    numpy>=1.24.0 \
+    transformers>=4.36.0 \
+    sentencepiece>=0.1.99
 
 # Set working directory
 WORKDIR /app

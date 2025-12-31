@@ -302,21 +302,37 @@ def create_engine(
     model_name: str = 'small',
     beam_size: int = 5,
     compute_type: str = None,
-) -> WhisperEngine:
+):
     """
-    Factory function to create the appropriate Whisper engine.
+    Factory function to create the appropriate ASR/translation engine.
 
     Args:
-        backend: 'whisper_trt', 'faster_whisper', or 'whisper'
+        backend: 'whisper_trt', 'faster_whisper', 'whisper', or 'seamless_m4t'
         model_name: Model size ('tiny', 'base', 'small', 'medium', 'large', 'large-v3')
                     or HuggingFace model ID (e.g., 'kotoba-tech/kotoba-whisper-bilingual-v1.0-faster')
+                    For seamless_m4t: 'seamlessM4T_v2_large' (recommended)
         beam_size: Beam size for decoding
         compute_type: For faster_whisper: 'float16', 'int8_float16', 'int8' (GPU)
                       int8_float16 uses ~50% less VRAM than float16
 
     Returns:
-        WhisperEngine instance
+        Engine instance (WhisperEngine or SeamlessM4TEngine)
     """
+    # Handle SeamlessM4T separately (different architecture)
+    if backend == 'seamless_m4t':
+        from app.asr.seamless_engine import SeamlessM4TEngine
+        import torch
+
+        # Default to large model for best quality
+        if model_name in ['small', 'base', 'tiny', 'medium', 'large', 'large-v3']:
+            model_name = 'seamlessM4T_v2_large'
+
+        dtype = torch.float16 if compute_type in ['float16', None] else torch.float32
+        engine = SeamlessM4TEngine(model_name=model_name, dtype=dtype)
+        engine.load()
+        return engine
+
+    # Whisper engines
     engines = {
         'whisper_trt': WhisperTRTEngine,
         'faster_whisper': FasterWhisperEngine,
@@ -324,7 +340,7 @@ def create_engine(
     }
 
     if backend not in engines:
-        raise ValueError(f"Unknown backend: {backend}. Available: {list(engines.keys())}")
+        raise ValueError(f"Unknown backend: {backend}. Available: {list(engines.keys()) + ['seamless_m4t']}")
 
     # Pass compute_type only to faster_whisper
     if backend == 'faster_whisper':

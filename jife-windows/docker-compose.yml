@@ -13,6 +13,13 @@
 #   - Docker Desktop with WSL2 backend
 #   - NVIDIA Container Toolkit installed in WSL2
 #   - USB audio device attached to WSL2 (via usbipd)
+#
+# Engine Options (WHISPER_BACKEND):
+#   - faster_whisper: (DEFAULT) Whisper large-v3 - our stable baseline
+#   - seamless_m4t:   SeamlessM4T v2 - Meta's speech translation model
+#
+# To switch engines:
+#   WHISPER_BACKEND=seamless_m4t docker compose up -d
 # =============================================================================
 
 services:
