@@ -51,6 +51,16 @@ AVAILABLE_MODELS = [
         'beam_size': 5,
         'backend': 'pipeline',
     },
+    # Option D: Pipeline (Whisper transcribe + MADLAD-400 translate)
+    {
+        'id': 'madlad:float16:5',
+        'model': 'large-v3',
+        'name': 'Whisper + MADLAD-400 (Option D)',
+        'description': 'Whisper transcribes JP, MADLAD-400-3B translates. Best quality/latency balance.',
+        'compute_type': 'float16',
+        'beam_size': 5,
+        'backend': 'madlad',
+    },
     # Faster options
     {
         'id': 'medium:float16:5',
@@ -130,6 +140,21 @@ class SubtitleServer:
             'subtitles by',
             'captions by',
             'translated by',
+            "i'll come back to you",
+            "and i'll come back to you",
+            "i'll be back",
+            "i will come back",
+            # Violent hallucinations on music/noise
+            "i'll die",
+            "i will die",
+            "i'll kill you",
+            "i will kill you",
+            "kill you",
+            "die",
+            "i'm going to die",
+            "you're going to die",
+            "i'm dead",
+            "death",
             # SeamlessM4T repetitive hallucinations
             "i'm going to be able to",
             "i'm going to be",
@@ -138,6 +163,18 @@ class SubtitleServer:
             "i don't know what to do",
             "i don't know what to say",
             "i don't know",
+        ]
+
+        # Short phrases that are almost always hallucinations (exact match only)
+        self.short_hallucinations = [
+            "die",
+            "no",
+            "yes",
+            "oh",
+            "ah",
+            "uh",
+            "um",
+            "hmm",
         ]
 
         # Model switching support
@@ -322,16 +359,56 @@ class SubtitleServer:
             if phrase in text_lower:
                 return True
 
-        # Check for repetitive patterns (e.g., "I'm going to, I'm going to, I'm going to")
-        # Split into words and check for excessive repetition
+        # Check for repetitive patterns - more aggressive detection
         words = text_lower.split()
+
+        # Pattern 1: Any 3+ word phrase that repeats 2+ times is suspicious
         if len(words) >= 6:
-            # Check if any 3-word phrase repeats 3+ times
-            for i in range(len(words) - 8):
-                phrase = ' '.join(words[i:i+3])
-                count = text_lower.count(phrase)
-                if count >= 3:
-                    return True
+            for phrase_len in [3, 4, 5]:  # Check 3, 4, and 5 word phrases
+                if len(words) >= phrase_len * 2:
+                    for i in range(len(words) - phrase_len + 1):
+                        phrase = ' '.join(words[i:i+phrase_len])
+                        # Count non-overlapping occurrences
+                        count = 0
+                        pos = 0
+                        temp = text_lower
+                        while phrase in temp[pos:]:
+                            count += 1
+                            pos = temp.find(phrase, pos) + len(phrase)
+                        if count >= 2:
+                            logger.debug(f"Repetition detected: '{phrase}' x{count}")
+                            return True
+
+        # Pattern 2: Same sentence repeated (with punctuation variations)
+        import re
+        # Remove punctuation for comparison
+        clean_text = re.sub(r'[^\w\s]', '', text_lower)
+        clean_words = clean_text.split()
+
+        # Check if first half roughly equals second half (repeated sentence)
+        if len(clean_words) >= 4:
+            mid = len(clean_words) // 2
+            first_half = ' '.join(clean_words[:mid])
+            second_half = ' '.join(clean_words[mid:mid+len(clean_words[:mid])])
+            if first_half == second_half:
+                logger.debug(f"Repeated sentence detected: '{first_half}'")
+                return True
+
+        # Pattern 3: Very short repeated phrases like "No! No! No!"
+        if len(words) >= 3:
+            # Check for 1-2 word repetitions
+            for word_count in [1, 2]:
+                if len(words) >= word_count * 3:
+                    first_phrase = ' '.join(words[:word_count])
+                    all_same = True
+                    for i in range(0, min(len(words), word_count * 4), word_count):
+                        if i + word_count <= len(words):
+                            if ' '.join(words[i:i+word_count]) != first_phrase:
+                                all_same = False
+                                break
+                    if all_same and len(words) >= word_count * 3:
+                        logger.debug(f"Short repetition detected: '{first_phrase}' repeated")
+                        return True
 
         return False
 

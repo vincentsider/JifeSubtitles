@@ -307,17 +307,35 @@ def create_engine(
     Factory function to create the appropriate ASR/translation engine.
 
     Args:
-        backend: 'whisper_trt', 'faster_whisper', 'whisper', or 'seamless_m4t'
+        backend: 'whisper_trt', 'faster_whisper', 'whisper', 'seamless_m4t', 'pipeline', or 'madlad'
         model_name: Model size ('tiny', 'base', 'small', 'medium', 'large', 'large-v3')
                     or HuggingFace model ID (e.g., 'kotoba-tech/kotoba-whisper-bilingual-v1.0-faster')
                     For seamless_m4t: 'seamlessM4T_v2_large' (recommended)
+                    For madlad: Whisper model name (MADLAD model is fixed)
         beam_size: Beam size for decoding
         compute_type: For faster_whisper: 'float16', 'int8_float16', 'int8' (GPU)
                       int8_float16 uses ~50% less VRAM than float16
 
     Returns:
-        Engine instance (WhisperEngine or SeamlessM4TEngine)
+        Engine instance (WhisperEngine, SeamlessM4TEngine, PipelineEngine, or MADLADEngine)
     """
+    # Handle MADLAD (Option D): Whisper + MADLAD-400 text-to-text
+    if backend == 'madlad':
+        from app.asr.madlad_engine import MADLADEngine
+
+        # Use provided model_name for Whisper, default to large-v3
+        whisper_model = model_name if model_name not in ['madlad'] else 'large-v3'
+
+        engine = MADLADEngine(
+            whisper_model=whisper_model,
+            whisper_compute_type=compute_type or 'float16',
+            whisper_beam_size=beam_size,
+            madlad_model='Nextcloud-AI/madlad400-3b-mt-ct2-int8',  # INT8 quantized, ~1.6GB
+            madlad_compute_type='int8',  # INT8 as recommended in optiond.md
+        )
+        engine.load()
+        return engine
+
     # Handle Pipeline (Option C): Whisper + SeamlessM4T text-to-text
     if backend == 'pipeline':
         from app.asr.pipeline_engine import PipelineEngine

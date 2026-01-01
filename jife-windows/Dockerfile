@@ -34,6 +34,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 # Install Python dependencies
 # Note: We use CUDA 12.4 compatible versions
 # PyTorch with CUDA 12.4 support for SeamlessM4T
+# ctranslate2 for MADLAD-400 INT8 inference (Option D)
 RUN pip install --upgrade pip && \
     pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu124 && \
     pip install \
@@ -44,7 +45,9 @@ RUN pip install --upgrade pip && \
     scipy>=1.11.0 \
     numpy>=1.24.0 \
     transformers>=4.36.0 \
-    sentencepiece>=0.1.99
+    sentencepiece>=0.1.99 \
+    ctranslate2>=4.0.0 \
+    huggingface-hub>=0.20.0
 
 # Set working directory
 WORKDIR /app

@@ -6,11 +6,13 @@ from .whisper_engine import (
     FasterWhisperEngine,
     create_engine,
 )
+from .madlad_engine import MADLADEngine
 
 __all__ = [
     'WhisperEngine',
     'WhisperTRTEngine',
     'StandardWhisperEngine',
     'FasterWhisperEngine',
+    'MADLADEngine',
     'create_engine',
 ]
