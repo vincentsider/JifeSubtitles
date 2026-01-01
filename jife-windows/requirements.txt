@@ -16,5 +16,9 @@ flask-socketio>=5.3.0
 sounddevice>=0.4.6
 scipy>=1.11.0
 
+# Option E: Audio Preprocessing
+noisereduce>=3.0.0
+# demucs  # Optional: Uncomment for vocal isolation (adds ~1GB, more latency)
+
 # Utils
 numpy>=1.24.0

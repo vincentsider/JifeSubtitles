@@ -61,6 +61,16 @@ AVAILABLE_MODELS = [
         'beam_size': 5,
         'backend': 'madlad',
     },
+    # Option E: Enhanced Whisper (Audio Preprocessing + Whisper)
+    {
+        'id': 'enhanced:float16:5',
+        'model': 'large-v3',
+        'name': 'Enhanced Whisper (Option E)',
+        'description': 'Audio preprocessing (normalization + noise reduction) + Whisper. Best for noisy/music content.',
+        'compute_type': 'float16',
+        'beam_size': 5,
+        'backend': 'enhanced',
+    },
     # Faster options
     {
         'id': 'medium:float16:5',
@@ -155,6 +165,14 @@ class SubtitleServer:
             "you're going to die",
             "i'm dead",
             "death",
+            # Music/singing hallucinations
+            "what's that",
+            "what is that",
+            "wow",
+            "what?",
+            "i'm going to sleep",
+            "i'm going to bed",
+            "going to sleep",
             # SeamlessM4T repetitive hallucinations
             "i'm going to be able to",
             "i'm going to be",
@@ -354,9 +372,22 @@ class SubtitleServer:
         """Check if text is a common hallucination or repetitive garbage"""
         text_lower = text.lower().strip()
 
+        # Very short text (1-2 words) is almost always hallucination
+        words = text_lower.split()
+        if len(words) <= 2:
+            # Check exact match for short hallucinations
+            if text_lower in self.short_hallucinations:
+                logger.debug(f"Short hallucination filtered: '{text}'")
+                return True
+            # Single words under 4 chars are suspicious
+            if len(words) == 1 and len(text_lower) < 4:
+                logger.debug(f"Very short word filtered: '{text}'")
+                return True
+
         # Check for known hallucination phrases
         for phrase in self.hallucination_phrases:
             if phrase in text_lower:
+                logger.debug(f"Hallucination phrase filtered: '{phrase}' in '{text}'")
                 return True
 
         # Check for repetitive patterns - more aggressive detection

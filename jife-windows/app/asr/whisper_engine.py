@@ -307,18 +307,37 @@ def create_engine(
     Factory function to create the appropriate ASR/translation engine.
 
     Args:
-        backend: 'whisper_trt', 'faster_whisper', 'whisper', 'seamless_m4t', 'pipeline', or 'madlad'
+        backend: 'whisper_trt', 'faster_whisper', 'whisper', 'seamless_m4t', 'pipeline', 'madlad', or 'enhanced'
         model_name: Model size ('tiny', 'base', 'small', 'medium', 'large', 'large-v3')
                     or HuggingFace model ID (e.g., 'kotoba-tech/kotoba-whisper-bilingual-v1.0-faster')
                     For seamless_m4t: 'seamlessM4T_v2_large' (recommended)
                     For madlad: Whisper model name (MADLAD model is fixed)
+                    For enhanced: Whisper model name (uses preprocessing pipeline)
         beam_size: Beam size for decoding
         compute_type: For faster_whisper: 'float16', 'int8_float16', 'int8' (GPU)
                       int8_float16 uses ~50% less VRAM than float16
 
     Returns:
-        Engine instance (WhisperEngine, SeamlessM4TEngine, PipelineEngine, or MADLADEngine)
+        Engine instance (WhisperEngine, SeamlessM4TEngine, PipelineEngine, MADLADEngine, or EnhancedWhisperEngine)
     """
+    # Handle Enhanced (Option E): Whisper + Audio Preprocessing
+    if backend == 'enhanced':
+        from app.asr.enhanced_engine import EnhancedWhisperEngine
+
+        # Use provided model_name for Whisper, default to large-v3
+        whisper_model = model_name if model_name not in ['enhanced'] else 'large-v3'
+
+        engine = EnhancedWhisperEngine(
+            whisper_model=whisper_model,
+            whisper_compute_type=compute_type or 'float16',
+            whisper_beam_size=beam_size,
+            enable_vocal_isolation=False,  # Off by default (adds latency)
+            enable_noise_reduction=True,
+            enable_normalization=True,
+        )
+        engine.load()
+        return engine
+
     # Handle MADLAD (Option D): Whisper + MADLAD-400 text-to-text
     if backend == 'madlad':
         from app.asr.madlad_engine import MADLADEngine
