@@ -30,6 +30,14 @@ AVAILABLE_MODELS = [
         'beam_size': 1,
     },
     {
+        'id': 'large-v3:float16:1',
+        'model': 'large-v3',
+        'name': 'Large-v3 FP16 (Test)',
+        'description': 'FP16 precision - may use more VRAM but potentially better quality',
+        'compute_type': 'float16',
+        'beam_size': 1,
+    },
+    {
         'id': 'medium:int8:3',
         'model': 'medium',
         'name': 'Medium INT8',
