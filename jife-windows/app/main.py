@@ -113,10 +113,12 @@ def processing_loop(
             with engine_lock:
                 if whisper_engine is None:
                     continue
+                # Get current source language from web server (None for auto-detect)
+                source_lang = web_server.get_source_language()
                 text, metadata = whisper_engine.transcribe(
                     audio_chunk,
                     task=config.WHISPER_TASK,
-                    language=config.WHISPER_LANGUAGE,
+                    language=source_lang if source_lang else config.WHISPER_LANGUAGE,
                 )
 
             elapsed = time.time() - start_time

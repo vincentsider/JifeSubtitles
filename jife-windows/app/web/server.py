@@ -13,6 +13,24 @@ from flask_socketio import SocketIO
 
 logger = logging.getLogger(__name__)
 
+# Supported source languages for Whisper
+# Whisper auto-detects if not specified, but specifying improves accuracy
+SUPPORTED_LANGUAGES = [
+    {'code': 'auto', 'name': 'Auto-detect'},
+    {'code': 'ja', 'name': 'Japanese (日本語)'},
+    {'code': 'fr', 'name': 'French (Français)'},
+    {'code': 'en', 'name': 'English'},
+    {'code': 'zh', 'name': 'Chinese (中文)'},
+    {'code': 'ko', 'name': 'Korean (한국어)'},
+    {'code': 'es', 'name': 'Spanish (Español)'},
+    {'code': 'de', 'name': 'German (Deutsch)'},
+    {'code': 'it', 'name': 'Italian (Italiano)'},
+    {'code': 'pt', 'name': 'Portuguese (Português)'},
+    {'code': 'ru', 'name': 'Russian (Русский)'},
+    {'code': 'ar', 'name': 'Arabic (العربية)'},
+    {'code': 'hi', 'name': 'Hindi (हिन्दी)'},
+]
+
 # Available models for the frontend selector
 # Optimized for Windows PC with NVIDIA GPU (RTX 20xx/30xx/40xx)
 # 'id' format: model_name:compute_type:beam_size for unique identification
@@ -210,6 +228,10 @@ class SubtitleServer:
         self.model_switching: bool = False
         self.model_switch_callback: Optional[Callable] = None
 
+        # Source language support
+        self.source_language: str = 'ja'  # Default to Japanese
+        self.language_change_callback: Optional[Callable] = None
+
         # Register routes and events
         self._register_routes()
         self._register_socket_events()
@@ -294,6 +316,42 @@ class SubtitleServer:
                 'switching': self.model_switching,
             })
 
+        @self.app.route('/languages')
+        def get_languages():
+            """Get supported source languages and current language"""
+            return jsonify({
+                'languages': SUPPORTED_LANGUAGES,
+                'current': self.source_language,
+            })
+
+        @self.app.route('/language', methods=['POST'])
+        def set_language():
+            """Set source language"""
+            data = request.get_json() or {}
+            lang_code = data.get('language')
+
+            if not lang_code:
+                return jsonify({'error': 'No language specified'}), 400
+
+            # Validate language code
+            valid_codes = [l['code'] for l in SUPPORTED_LANGUAGES]
+            if lang_code not in valid_codes:
+                return jsonify({'error': f'Invalid language: {lang_code}'}), 400
+
+            old_lang = self.source_language
+            self.source_language = lang_code
+
+            # Notify callback if set
+            if self.language_change_callback:
+                self.language_change_callback(lang_code)
+
+            # Notify all clients
+            lang_name = next((l['name'] for l in SUPPORTED_LANGUAGES if l['code'] == lang_code), lang_code)
+            self.socketio.emit('language_changed', {'code': lang_code, 'name': lang_name})
+
+            logger.info(f"Source language changed: {old_lang} -> {lang_code}")
+            return jsonify({'status': 'ok', 'language': lang_code})
+
         @self.app.route('/models/switch', methods=['POST'])
         def switch_model():
             """Switch to a different model"""
@@ -360,6 +418,20 @@ class SubtitleServer:
     def set_current_model(self, model_id: str):
         """Set the current model ID"""
         self.current_model = model_id
+
+    def set_language_change_callback(self, callback: Callable[[str], None]):
+        """Set callback function for language changes"""
+        self.language_change_callback = callback
+
+    def set_source_language(self, lang_code: str):
+        """Set the current source language"""
+        self.source_language = lang_code
+
+    def get_source_language(self) -> str:
+        """Get the current source language (returns None for 'auto')"""
+        if self.source_language == 'auto':
+            return None
+        return self.source_language
 
     def _register_socket_events(self):
         """Register WebSocket events"""

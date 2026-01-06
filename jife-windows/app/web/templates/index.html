@@ -181,6 +181,9 @@
 <body class="size-medium">
     <div id="header">
         <span class="status-dot" id="statusDot"></span>
+        <select id="langSelect" onchange="setSourceLanguage(this.value)" title="Source Language">
+            <option value="">Loading...</option>
+        </select>
         <select id="modelSelect" onchange="switchModel(this.value)" title="Model">
             <option value="">Loading...</option>
         </select>
@@ -190,7 +193,7 @@
             <option value="large">A++</option>
             <option value="xlarge">A+++</option>
         </select>
-        <button onclick="toggleSource()" title="Toggle Japanese" id="toggleBtn">JP</button>
+        <button onclick="toggleSource()" title="Toggle source text" id="toggleBtn">SRC</button>
         <button onclick="togglePause()" title="Pause/Resume" id="pauseBtn">⏸</button>
         <button onclick="showPowerMenu()" title="Power" id="powerBtn">⚡</button>
     </div>
@@ -228,6 +231,8 @@
         let isPaused = false;
         let currentModel = '';
         let availableModels = [];
+        let currentLanguage = 'ja';
+        let availableLanguages = [];
 
         // How long subtitle stays visible (ms)
         const DISPLAY_DURATION = 4000;
@@ -466,8 +471,68 @@
             }, 3000);
         });
 
-        // Load models on page load
+        // Language handling
+        function loadLanguages() {
+            fetch('/languages')
+                .then(res => res.json())
+                .then(data => {
+                    availableLanguages = data.languages;
+                    currentLanguage = data.current;
+                    updateLanguageSelect();
+                })
+                .catch(err => console.error('Failed to load languages:', err));
+        }
+
+        function updateLanguageSelect() {
+            const select = document.getElementById('langSelect');
+            select.innerHTML = '';
+            availableLanguages.forEach(l => {
+                const opt = document.createElement('option');
+                opt.value = l.code;
+                opt.textContent = l.name;
+                if (l.code === currentLanguage) opt.selected = true;
+                select.appendChild(opt);
+            });
+        }
+
+        function setSourceLanguage(langCode) {
+            if (!langCode) return;
+
+            fetch('/language', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({language: langCode})
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Language change failed: ' + data.error);
+                    document.getElementById('langSelect').value = currentLanguage;
+                } else {
+                    currentLanguage = langCode;
+                }
+            })
+            .catch(err => {
+                alert('Language change failed: ' + err);
+                document.getElementById('langSelect').value = currentLanguage;
+            });
+        }
+
+        // Socket event for language change
+        socket.on('language_changed', (data) => {
+            currentLanguage = data.code;
+            updateLanguageSelect();
+            // Brief notification
+            subtitleEl.innerHTML = `<div class="subtitle-text" style="color:#00ff88">Language: ${data.name}</div>`;
+            subtitleEl.classList.add('visible');
+            setTimeout(() => {
+                subtitleEl.classList.remove('visible');
+            }, 2000);
+        });
+
+        // Load models and languages on page load
         loadModels();
+        loadLanguages();
     </script>
 </body>
 </html>

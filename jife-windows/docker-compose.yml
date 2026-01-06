@@ -51,7 +51,7 @@ services:
 
     # Environment variables
     environment:
-      - PULSE_SERVER=unix:/run/user/1000/pulse/native
+      - PULSE_SERVER=unix:/mnt/wslg/PulseServer
       - AUDIO_DEVICE=${AUDIO_DEVICE:-0}
       - WHISPER_MODEL=${WHISPER_MODEL:-large-v3}
       - WHISPER_BACKEND=${WHISPER_BACKEND:-faster_whisper}
@@ -68,7 +68,6 @@ services:
     volumes:
       - ./app:/app/app:ro
       - ./cache:/app/cache
-      - /mnt/wslg/runtime-dir/pulse:/run/user/1000/pulse
       - /mnt/wslg:/mnt/wslg
 
     healthcheck:
